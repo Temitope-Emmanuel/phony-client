@@ -1,0 +1,7 @@
+export {default as mainBg} from "./mainBg.jpeg"
+export {default as Img2} from "./phoneApp.png"
+export {default as backgroundImg1} from "./scattered2x.png"
+export {default as backgroundImg2} from "./scattered2@2x.png"
+export {default as backgroundImg3} from "./skyline@2x.png"
+export {default as Svg1} from "./svg1.svg"
+export {default as Svg2} from "./svg2.svg"

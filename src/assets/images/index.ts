@@ -1,0 +1,1 @@
+export {default as clusterImg} from "./clusterImg/phone-app-2.png"

@@ -1,0 +1,5 @@
+export {default as Img1} from "./Security.png"
+export {default as Img2} from "./active.png"
+export {default as Img3} from "./add_to_cart.png"
+export {default as Img4} from "./transfer_money.png"
+export {default as Img5} from "./wallet.png"
