@@ -29,16 +29,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint . --ext .ts",
-    "prettier-format": "prettier --config .prettierrc src/**/*.ts --write",
-    "prettier-watch": "onchange 'src/**/*.ts' -- prettier --write {{changed}}",
-    "test:node": "cross-env NODE_ENV=test jest  --forceExit --maxWorkers=1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run prettier-format && npm run lint"
-    }
-  },
+    "lint": "eslint . --ext .ts"
+    },
   "eslintConfig": {
     "extends": "react-app"
   },
