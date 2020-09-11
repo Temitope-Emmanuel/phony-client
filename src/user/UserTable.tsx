@@ -8,11 +8,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import {Button,Box} from "@material-ui/core"
-import {blue} from '@material-ui/core/colors'
 import Dialog from './Dialog'
 import BurstModeIcon from '@material-ui/icons/BurstMode';
 import CheckIcon from "@material-ui/icons/CheckBoxSharp"
-import {green} from "@material-ui/core/colors"
+import {green,deepOrange,orange} from "@material-ui/core/colors"
+import {ICard} from "./UserComponent"
 
 const useStyles = makeStyles((theme:Theme) => (
     createStyles({
@@ -20,18 +20,37 @@ const useStyles = makeStyles((theme:Theme) => (
             display:"flex",
             flexDirection:"column",
             justifyContent:"end",
-            padding:"0 1em",
+            backgroundColor:orange[200],
+            borderRadius:".4em",
+            padding:"1em 1.5em",
+            overflowX:"hidden",
             "& > button":{
               margin:'1em 0',
               padding:".8em 1em"
             },
             "& > h3":{
-              fontSize:"1.8em",
-              fontWeight:"500"
+              fontSize:"2em",
+              fontWeight:500,
+              color:"rgba(0,0,0,.8)"
+            },
+            "& > div":{
+              backgroundColor:orange[200] 
             }
         },
           table: {
-          minWidth: 650,
+          minWidth: 750,
+          overflow:"hidden",
+          borderRadius:".2em .2em 2em 2em"
+        },
+        tableContainer:{
+          borderLeft:"rgba(0,0,0,.5) solid 3px",
+          borderRight:"rgba(0,0,0,.5) solid 3px",
+          overflowX:"hidden",
+          borderRadius:"0 1em 1em 0",
+          "& > *":{
+            borderBottom:"rgba(0,0,0,.5) solid 3px",
+            backgroundColor:"white"
+          }
         },
         statusContainer:{
           display:"flex",
@@ -45,6 +64,18 @@ const useStyles = makeStyles((theme:Theme) => (
             fontSize:"2em",
             marginLeft:".4em",
             marginTop:".2em"
+          }
+        },
+        textHeader:{
+          backgroundColor:deepOrange["A200"],
+          "& > *":{
+            fontSize:"1.2em",
+            textTransform:"uppercase",
+            fontWeight:600,
+            color:"white",
+            [theme.breakpoints.down("sm")]:{
+                 width:"min-content"
+            }
           }
         }
     })
@@ -62,32 +93,39 @@ const rows = [
     createData(5, "06/5", "Do you do Westen you", false, 3.9),
 ];
 
-const SimpleTable= function({...props}){
+interface IProps {
+  card:ICard[]
+}
+
+const SimpleTable:React.SFC<IProps> = function({card}){
     const classes = useStyles()
     const [open,setOpen] = React.useState(false)
     const handleToggle = () => {
         setOpen(!open)
     }
-
+    console.log(card)
     return (
         <Box className={classes.root}>
           <h3>Most Recent Transaction</h3>
-        <TableContainer component={Paper}>
+        <TableContainer>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
-              <TableRow>
-                <TableCell align="right">Date</TableCell>
-                <TableCell align="right">Comment</TableCell>
-                <TableCell align="right">Status</TableCell>
-                <TableCell align="right">Image</TableCell>
+              <TableRow className={classes.textHeader}>
+                <TableCell align="right"><span>Date</span></TableCell>
+                <TableCell align="right"><span>Comment</span></TableCell>
+                <TableCell align="right"><span>Status</span></TableCell>
+                <TableCell align="right"><span>Image</span></TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className={classes.tableContainer}>
               {rows.map((row) => (
                 <TableRow key={row.name}>
-                  <TableCell align="right">{row.calories}</TableCell>
-                  <TableCell align="right">{row.fat}</TableCell>
-                  <TableCell className={classes.statusContainer} align="right"><span>{row.carbs ? "Success" : "Pending"}</span><CheckIcon/></TableCell>
+                  <TableCell align="right"><span>{row.calories}</span></TableCell>
+                  <TableCell align="right"><span>{row.fat}</span></TableCell>
+                  <TableCell className={classes.statusContainer}
+                   align="right"><span>{row.carbs ? "Success"
+                    : "Pending"}</span><CheckIcon/>
+                  </TableCell>
                   <TableCell align="right"><BurstModeIcon/></TableCell>
                 </TableRow>
               ))}
@@ -95,9 +133,9 @@ const SimpleTable= function({...props}){
           </Table>
         </TableContainer>
         <Button onClick={handleToggle} style={{
-          backgroundColor:blue[300],
-          color:blue[900]
-        }}>Create New Transaction</Button>
+          color:"rgba(0,0,0,.9)",
+          backgroundColor:deepOrange["A200"]
+          }}>Create New Transaction</Button>
         <Dialog open={open} handleToggle={handleToggle} />
         </Box>
       );

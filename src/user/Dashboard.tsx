@@ -1,27 +1,37 @@
 import React from "react"
+import {useParams} from "react-router-dom"
 import {Box,Divider,Button,IconButton} from "@material-ui/core"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import {blue} from "@material-ui/core/colors"
 import SimpleTable from "./UserTable"
 import RatingCalculator from "../other/RatingCalculator"
-import Snackbar from "../other/Snackbar"
 import {orange,deepOrange,amber} from "@material-ui/core/colors"
+import {read} from "./api-user"
+import {retrieveJwt} from "../auth/auth-helper"
+import {IDialog} from "../config/SnackContext"
+import CardList from "./CardList"
+import {IUser} from "./UserComponent"
+
 
 const useStyles = makeStyles((theme:Theme) => (
     createStyles({
         root:{
             height:"auto",
-            margin:"2.5%",
             padding:theme.spacing(1,0),
-            width:"98%",
+            width:"98vw",
+            margin:"2em 1vw",
+            display:"flex",
+            justifyContent:"center",
+            alignItems:"center",
+            flexDirection:"column"
         },
         walletContainer:{
             display:"flex",
             flexDirection:"row",
             justifyContent:"space-between",
             alignItems:"center",
+            width:"95%",
             "& > div":{
                 borderRadius:".5em",
             },
@@ -29,7 +39,8 @@ const useStyles = makeStyles((theme:Theme) => (
                 flexDirection:"column-reverse",
                 justifyContent:"center",
                 "& > div":{
-                    width:"100%"
+                    width:"95%",
+                    margin:"1.5em 2.5%"
                 }
             }
         },
@@ -117,31 +128,68 @@ const useStyles = makeStyles((theme:Theme) => (
             }
         },
         transactionContainer:{
-            width:"95vw",
+            width:"95%",
+            padding:"1.5% 2.5%",
             display:"flex",
-            justifyContent:"space-between",
-            padding:theme.spacing(1.5,1),
+            justifyContent:"space-evenly",
             flexDirection:"row",
             [theme.breakpoints.down("md")]:{
                 flexDirection:"column",
                 alignItems:"center",
                 justifyContent:"space-between",
                 "& > div":{
-                    // width:"80% !important",
-                    // margin:" 1.5em 0"
+                    width:"98% !important",
+                    margin:" 1.5em 1%"
                 }
             }
         }
     })
 ))
 
-const Dashboard = () => {
+interface IParams {
+    userId:string
+}
+interface IProps {
+    user:IUser
+}
+
+interface IUserDetail extends IUser {
+    pendingTransaction?:number;
+    totalTransaction?:number;
+    successfulTransaction?:number;
+}
+
+interface adapter {
+    [key:string]:string | number
+}
+
+const Dashboard = (props:IProps) => {
     const classes = useStyles()
+    const params:IParams = useParams()
+    const jwt = retrieveJwt()
+    const [userDetail,setUserDetail] = React.useState<IUserDetail>()
     const [message,setMessage] = React.useState({
         type:"success",
         text:""
     })
-    return(
+    React.useEffect(() => {
+        let totalTransaction:number = 0;
+        let pendingTransaction:number = 0;
+        let successfulTransaction:number = 0;
+
+        props.user!.card?.map((card,idx) => {
+            if(card.status === "Pending"){
+                pendingTransaction++
+            }else{
+                successfulTransaction++
+            }
+        })
+        setUserDetail({...props.user,
+            pendingTransaction,successfulTransaction
+            ,totalTransaction:props.user.card?.length
+        })
+    },[props.user])
+return(
         <Box className={classes.root}>
         <Box className={classes.walletContainer}>
             <Box className={classes.acctContainer} style={{
@@ -158,24 +206,29 @@ const Dashboard = () => {
                             alignItems:"center",
                             flexDirection:"column"
                         }}>
-                            <h3>WALLET BALANCE</h3>
-                            <span>0.00NGN</span>
+                            {/* <h3>WALLET BALANCE</h3>
+                            <span>0.00NGN</span> */}
+                            <h3>REFERRAL CODE</h3>
+                            <span>{props.user.referral}</span>
                         </Box>
                     </Box>
                     <Box style={{
                         flexDirection:"column",
                     }}>
-                        <h3>EARNING HISTORY</h3>
+                        {/* <h3>EARNING HISTORY</h3> */}
+                        <h3>TRANSACTION HISTORY</h3>
                         <Box className={classes.amountContainer}>    
-                                {["Gift Cards","BTC","REFERRALS"].map((m,idx) =>(
-                                <Box key={idx}>
-                                    <span>0.00</span>
-                                    <span>{m}</span>
-                                </Box>
-                                ))}
+                        {userDetail && ["pendingTransaction",
+                                "successfulTransaction",
+                                "totalTransaction"]
+                        .map((item,idx) => (
+                            <Box>
+                                <span>{item.substring(0,item.indexOf("T"))}</span>
+                                <span>{((userDetail as unknown as adapter)[item])}</span>
+                            </Box>
+                        ))}
                         </Box>
                     </Box>
-                
             </Box>
             <Box className={classes.btcContainer} style={{
                 backgroundColor:orange[200]
@@ -206,20 +259,16 @@ const Dashboard = () => {
             </Box>
         </Box>
         <Box className={classes.transactionContainer}>
-            <Box style={{width:"55"}}>
-                <SimpleTable
-                  />
+            <Box style={{width:"45"}}>
+                {userDetail?.card &&
+                <SimpleTable card={userDetail!.card}/>
+                }
             </Box>
             <Box style={{width:"40%"}}>
             <RatingCalculator/>
             </Box>
         </Box>
-        {/* <Box className={classes.extraContainer}>
-            <Box className={classes.customerContainer}>
-            </Box>
-            <Box className={classes.advertContainer}>
-            </Box>
-        </Box> */}
+        
     </Box>
     )
 }

@@ -11,7 +11,10 @@ import UseInput from "../config/useInputState"
 const useStyles = makeStyles((theme:Theme) => (
     createStyles({
         root:{
-                      
+            "& > h2":{
+                color:"rgba(0,0,0,.8)",
+                fontWeight:600
+            }      
         },
         formControl:{
             width:"100%"
@@ -21,23 +24,25 @@ const useStyles = makeStyles((theme:Theme) => (
 
 interface IProps {
     heading:string;
-    category:string;
+    category:boolean;
 }
 
 const SelectComponent:React.SFC<IProps> = function({heading,category,...props}){
     const [state,setState] = UseInput("")
+    
+    // const handleChange = (e:any) => {
+    //     setState(e.target.value)
+    // }
     const classes = useStyles()
-
-
     return(
         <Box className={classes.root}>
             <h2>{heading}</h2>
-            <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel htmlFor="outlined-age-native-simple"><span>{heading}</span></InputLabel>
+            <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="outlined-age-native-simple">{heading}</InputLabel>
                 <Select
                 native
                 value={state}
-                // onChange={setState}
+                onChange={setState}
                 label="Gift Card"
                 inputProps={{
                     name: 'card',
@@ -71,5 +76,4 @@ const SelectComponent:React.SFC<IProps> = function({heading,category,...props}){
         </Box>
     )
 }
-
-export default Select
+export default SelectComponent

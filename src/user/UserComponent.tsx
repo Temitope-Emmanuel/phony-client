@@ -1,7 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-// import SwipeableViews from 'react-swipeable-views';
+import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme,Theme,createStyles } from '@material-ui/core/styles';
+import {read } from "./api-user"
+import {useParams} from "react-router-dom"
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -83,26 +84,69 @@ const useStyles = makeStyles((theme:Theme) => (
     })
 ))
 
-// const Header = motion.header(animate:{start:})
+interface IParams {
+  userId:string
+}
+
+export interface ICard {
+  image:string;
+  owner?:string;
+  _id:string;
+  status:string;  
+}
+
+
+export interface IUser {
+  username:string;
+  email:string;
+  role:string[];
+  verified:boolean;
+  card?:ICard[];
+  referral:string;
+  referralCount:number;
+}
+
 
 const UserComponent = function(props:RouteComponentProps){
     const classes = useStyles()
     const theme = useTheme()
     const [value,setValue] = React.useState(0)
     const context = React.useContext(SnackbarContext)
-
+    const params:IParams = useParams()
+    const [user,setUser] = React.useState<IUser>()
+    
     const handleChange = (evt: any,newValue: any) => {
         setValue(newValue)
     }
     const handleChangeIndex = (idx:number) => {
         setValue(idx)
     }
-    const jwt = retrieveJwt()
 
+    const jwt = retrieveJwt()    
     React.useEffect(() => {
-      context.handleOpen!({type:"info",message:`Welcome back ${jwt!.user.username}`})
-    },[])
+      const abortController = new AbortController()
+      const signal = abortController.signal
+      if(jwt){
+        read({signal,userId:jwt?.user._id},jwt.token).then(data => {
+          if(data.user){
+            setUser(data.user)
+            context.handleOpen!({type:"info",message:`Welcome ${data.user.username}`})
+          }else{
+            context.handleOpen!({type:"error",message:data.error || "Something went wrong"})
+          }
+        })
 
+      return function(){
+        abortController.abort()
+      }
+      }},[])
+
+
+  // console.log("render")
+  // if(!Boolean(user)){
+  //   return <div>still loading</div>
+  // }else{
+  //   console.log("rendering again")
     return (
         <>
         <div className={classes.root}>
@@ -127,31 +171,38 @@ const UserComponent = function(props:RouteComponentProps){
               ))}
             </Tabs>
           </AppBar>
-          {/* <SwipeableViews
+          <SwipeableViews
             axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
             index={value}
             onChangeIndex={handleChangeIndex}
-          > */}
+          >
             <TabPanel value={value} index={0} 
             dir={theme.direction}
             >
-              <Dashboard/>
+              {
+                user?.username &&
+              <Dashboard user={user} />
+              }
             </TabPanel>
             <TabPanel value={value} index={1}
              dir={theme.direction}
              >
-              <UserTable/>
+               {
+                 user?.card &&
+                <UserTable card={user.card} />
+               }
             </TabPanel>
             <TabPanel value={value} index={2}
              dir={theme.direction}
              >
               Item Three
             </TabPanel>
-          {/* </SwipeableViews> */}
+          </SwipeableViews>
         <Footer/>
         </div>
         </>
-      );
+      )
+    // };
 }
 
 export default UserComponent

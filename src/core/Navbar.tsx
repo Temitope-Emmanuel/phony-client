@@ -1,7 +1,8 @@
 import React from 'react'
 import {useEffect} from 'react'
+import clsx from "clsx"
 import {makeStyles } from '@material-ui/core/styles';
-import {useHistory,useLocation} from "react-router-dom"
+import {useLocation} from "react-router-dom"
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -24,7 +25,9 @@ const useStyles = makeStyles((theme:Theme) =>
             transition:"all .3s ease-in",
             padding:"0 2.5em",
             width:"100vw",
-            // marging:"0 2.5em"
+            [theme.breakpoints.down("md")]:{
+              paddingRight:0
+            }
           },
           menuButton: {
             marginRight: theme.spacing(2),
@@ -62,11 +65,12 @@ const useStyles = makeStyles((theme:Theme) =>
             [theme.breakpoints.up('md')]: {
               display: 'none',
             },
+            "& svg":{
+              color:"black"
+            }
           },
-          sectionDesktop:{},
           hrefContainer:{
             width:"50%",
-            display:"flex",
             justifyContent:"space-evenly",
             "& a":{
               fontSize:"1.2em",
@@ -75,7 +79,7 @@ const useStyles = makeStyles((theme:Theme) =>
               textTransform:"capitalize",
               letterSpacing:".1em",
               fontWeight:"500",
-              padding:theme.spacing(1, .1),
+              padding:theme.spacing(1,.1),
               transition:"color .3s linear",
               "&::after":{
                 content:"' '",
@@ -93,7 +97,7 @@ const useStyles = makeStyles((theme:Theme) =>
                 },
               }
             },
-            // display: 'none',
+            display: 'none',
             [theme.breakpoints.up('md')]: {
               display: 'flex',
             }
@@ -175,7 +179,7 @@ const Navbar = () => {
             </Link>
           </Box>
           <div className={classes.grow} />
-          <div className={`${classes.hrefContainer} ${classes.sectionDesktop}`}>
+          <div className={classes.hrefContainer}>
             <Link to="/user">
               Blog
             </Link>
