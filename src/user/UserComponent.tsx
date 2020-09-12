@@ -2,7 +2,6 @@ import React from 'react';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme,Theme,createStyles } from '@material-ui/core/styles';
 import {read } from "./api-user"
-import {useParams} from "react-router-dom"
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -14,7 +13,7 @@ import PaymentIcon from '@material-ui/icons/Payment';
 import RecentActorsIcon from '@material-ui/icons/RecentActors';
 import Dashboard from "./Dashboard"
 import {RouteComponentProps} from "react-router-dom"
-import UserTable from './UserTable'
+import TransactionTable from './TransactionTable'
 import {DialogContext as SnackbarContext} from "../config/SnackContext"
 import Footer from "../other/Footer"
 import {retrieveJwt} from "../auth/auth-helper"
@@ -90,9 +89,12 @@ interface IParams {
 
 export interface ICard {
   image:string;
-  owner?:string;
+  owner:string;
   _id:string;
-  status:string;  
+  status:string;
+  createdAt:Date;
+  comment:string;
+
 }
 
 
@@ -112,7 +114,6 @@ const UserComponent = function(props:RouteComponentProps){
     const theme = useTheme()
     const [value,setValue] = React.useState(0)
     const context = React.useContext(SnackbarContext)
-    const params:IParams = useParams()
     const [user,setUser] = React.useState<IUser>()
     
     const handleChange = (evt: any,newValue: any) => {
@@ -141,6 +142,17 @@ const UserComponent = function(props:RouteComponentProps){
       }
       }},[])
 
+      const updateCardList = (card:ICard) => {
+        const newCard = (user as IUser).card
+        newCard!.unshift(card)
+        const newUser:IUser = {
+          ...(user as IUser),card:newCard
+        }
+        setUser(newUser)
+      }
+    
+      console.log(user)
+      
 
   // console.log("render")
   // if(!Boolean(user)){
@@ -181,16 +193,24 @@ const UserComponent = function(props:RouteComponentProps){
             >
               {
                 user?.username &&
-              <Dashboard user={user} />
+              <Dashboard updateCardList={updateCardList} user={user} />
               }
             </TabPanel>
             <TabPanel value={value} index={1}
-             dir={theme.direction}
-             >
+             dir={theme.direction}>
+               <div style={{
+               display:"flex",
+               justifyContent:"center",
+               alignItems:"center",
+               padding:"0 1%",
+               width:"98%"
+             }}>
                {
                  user?.card &&
-                <UserTable card={user.card} />
+                <TransactionTable cards={user.card}
+                 updateCardList={updateCardList} />
                }
+               </div>
             </TabPanel>
             <TabPanel value={value} index={2}
              dir={theme.direction}

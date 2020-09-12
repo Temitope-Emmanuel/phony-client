@@ -11,9 +11,9 @@ import {Accordion,
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {Link} from "react-router-dom"
 import {green,red} from "@material-ui/core/colors"
-import Dialog from "./Dialog"
-// import AddForm from "./AddForm"
+// import Dialog from "./Dialog"
 import {TransitionGroup,CSSTransition} from "react-transition-group"
+import {ICard} from "./UserComponent"
 // import "../../assets/styles/transition.css"
 
 const useStyles = makeStyles((theme:Theme) => (
@@ -102,22 +102,17 @@ const useStyles = makeStyles((theme:Theme) => (
        })
 ));
 
-interface ICard {
-    _id:string;
-    name:string;
-    description:string;
-    image:string;
-}
 
 interface IProps {
-    cards:ICard[]
+    cards:ICard[];
+    updateCardList(arg:ICard):void
 }
 
 const CardList:React.SFC<IProps> = function({cards,...props}) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState<string | boolean>(false);
+  // const [open,setOpen] = React.useState(false)
   const [showForm,setShowForm] = React.useState(false)
-  const [open,setOpen] = React.useState(false)
   const [user,setUser] = React.useState({
 
   })
@@ -138,28 +133,16 @@ const CardList:React.SFC<IProps> = function({cards,...props}) {
   //         abortController.abort()
   //     }
   // },[])
-
-  console.log("This is the dashboard",user)
-  
-
-
-
-  const handleForm = () => {
-    setShowForm(!showForm)
-  }
-  const handleToggle = () => {
-      setOpen(!open)
-  }
-  
-
-
+  // const handleToggle = () => {
+  //     setOpen(!open)
+  // }
   const handleChange = (panel:string) => (event:any, isExpanded:boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
 
   return (
     <>
-    <Dialog open={open} handleToggle={handleToggle} />
+    {/* <Dialog open={open} updateCardList={props.updateCardList} handleToggle={handleToggle} /> */}
       <div className={classes.root}>
         <TransitionGroup>
       {cards.map((card) => (
@@ -169,8 +152,8 @@ const CardList:React.SFC<IProps> = function({cards,...props}) {
           timeout={500}
           >      
       <Accordion
-        className={classes.AccordionContainer}
       //  transitiononprops={{unmountOnExit:true}} 
+       className={classes.AccordionContainer}
        elevation={10}
        key={card._id}
        onChange={handleChange(card._id)}
@@ -181,8 +164,8 @@ const CardList:React.SFC<IProps> = function({cards,...props}) {
           aria-controls={card._id}
           id={card._id}>
             <Box className={classes.headingContainer}>
-              <Typography className={classes.heading}>{card.name}</Typography>
-              {expanded !== card._id ? <img height="25" alt="camp-img" src={card.image}/> : null}
+              <Typography className={classes.heading}>{card.owner}</Typography>
+              {expanded !== card._id ? <img height="25" alt="card-img" src={card.image}/> : null}
             </Box>
         </AccordionSummary>
         <AccordionDetails className={classes.details}>
@@ -192,7 +175,7 @@ const CardList:React.SFC<IProps> = function({cards,...props}) {
             }} />
           <div className={clsx(classes.column, classes.helper)}>
             <p className={classes.detailParagraph} >
-                {card.description}
+                {card.comment}
             </p>
             <Link to={`/campground/${card._id}`} 
                 className={classes.link}>
@@ -201,15 +184,6 @@ const CardList:React.SFC<IProps> = function({cards,...props}) {
           </div>
         </AccordionDetails>
         <Divider style={{backgroundColor:"rgba(0,0,0,.4)",margin:"0 1.4em"}} />
-        {/* <Grow mountOnEnter unmountOnExit in={expanded === camp._id && showForm} >
-          <AddForm 
-            campId ={camp._id}
-            campName={camp.name}
-            campDesc={camp.description} 
-            useHandleCollapsed={handleForm} 
-            editCampground={editCampground} 
-            inputs={['Campground','description']} />
-        </Grow> */}
         {/* <AccordionActions className={classes.buttonContainer} style={{float:"left",margin:"0 .5em"}}>
           <Button size="small"
           onClick={() => deleteCampground(camp._id)}

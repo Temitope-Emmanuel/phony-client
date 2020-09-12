@@ -1,17 +1,16 @@
 import React from "react"
-import {useParams} from "react-router-dom"
 import {Box,Divider,Button,IconButton} from "@material-ui/core"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import SimpleTable from "./UserTable"
+import SimpleTable from "./TransactionTable"
 import RatingCalculator from "../other/RatingCalculator"
 import {orange,deepOrange,amber} from "@material-ui/core/colors"
 import {read} from "./api-user"
 import {retrieveJwt} from "../auth/auth-helper"
 import {IDialog} from "../config/SnackContext"
-import CardList from "./CardList"
-import {IUser} from "./UserComponent"
+import TransactionTable from "./TransactionTable"
+import {IUser,ICard} from "./UserComponent"
 
 
 const useStyles = makeStyles((theme:Theme) => (
@@ -150,7 +149,8 @@ interface IParams {
     userId:string
 }
 interface IProps {
-    user:IUser
+    user:IUser;
+    updateCardList(arg:ICard):void
 }
 
 interface IUserDetail extends IUser {
@@ -165,7 +165,6 @@ interface adapter {
 
 const Dashboard = (props:IProps) => {
     const classes = useStyles()
-    const params:IParams = useParams()
     const jwt = retrieveJwt()
     const [userDetail,setUserDetail] = React.useState<IUserDetail>()
     const [message,setMessage] = React.useState({
@@ -259,9 +258,9 @@ return(
             </Box>
         </Box>
         <Box className={classes.transactionContainer}>
-            <Box style={{width:"45"}}>
+            <Box style={{width:"45",marginRight:"3em"}}>
                 {userDetail?.card &&
-                <SimpleTable card={userDetail!.card}/>
+                <TransactionTable updateCardList={props.updateCardList} cards={userDetail!.card}/>
                 }
             </Box>
             <Box style={{width:"40%"}}>

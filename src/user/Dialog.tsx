@@ -1,12 +1,15 @@
-import React from "react"
-import PropTypes from "prop-types"
+import React,{MouseEvent,ChangeEvent} from "react"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
 import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {Dialog,Box,DialogContent,TextField,DialogActions} from '@material-ui/core';
+import {Dialog,Typography,Box,DialogContent,TextField,DialogActions} from '@material-ui/core';
 import { blue,red } from '@material-ui/core/colors';
 import BurstModeIcon from '@material-ui/icons/BurstMode';
 import {DialogContext} from "../config/SnackContext"
+import {create} from "./api-card"
+import {retrieveJwt} from "../auth/auth-helper"
+import {useParams} from "react-router-dom"
+import {ICard} from "./UserComponent"
 
 
 const useStyles = makeStyles((theme:Theme) => (
@@ -30,60 +33,88 @@ type MessageType = {
 interface IProps {
     open:boolean;
     handleToggle : () => void;
+    updateCardList(arg:ICard):void
 }
 
-const DialogComponent:React.SFC<IProps> = ({open,handleToggle,...props}) => {
-    const [file,setFile] = React.useState(null)
-    const [name,setName] = React.useState("")
+
+
+interface IState {
+    comment:string;
+    image?:File,
+    imageLink:string
+}
+
+interface IParams {
+    userId:string
+}
+
+const DialogComponent:React.SFC<IProps> = ({open,updateCardList,handleToggle,...props}) => {
     const context = React.useContext(DialogContext)
-    const handleDrop = async (file: React.SetStateAction<null>[]) => {
-        setFile(file[0])
-    }
     const classes = useStyles()
+    const params:IParams | {} = useParams()
+    const[values,setValues] = React.useState<IState>({
+        comment:"",
+        imageLink:"http://placeimg.com/640/480"
+    })
+
     const handleSubmit = async () => {
-        const payload = {name,file}
-
-        const formData = new FormData()
-        // formData.append('file',(file as string))
-        formData.append('upload_preset',"YHPHONY_V1")
-
-        const response = await fetch("https://api.cloudinary.com/v1_1/yhamagee/image/upload",{
-            method:'POST',
-            headers:{
-                "Accept":"application/json"
-            },
-            body:formData
-        })
-        const result = await response.json()
-        handleToggle()
-        result.status === 200 ? 
-        context.handleOpen!({
-            type:"success",
-            message:"New Request successfully created"
-        }):
-        context.handleOpen!({
-            type:"info",
-            message:"Unable to create new Request"
-        })
+        const newCard = new FormData()
+        const jwt = retrieveJwt()
+        newCard.append("comment",values.comment)        
+        newCard.append("image",values.imageLink)
+            create(newCard,{userId:(params as IParams).userId,token:jwt!.token}).then(data => {
+                console.log("this is the data",data)
+                if(data.message){
+                    updateCardList(data.data)
+                    context.handleOpen!({type:"success",message:"New Transaction created Successful"})
+                }else{
+                    context.handleOpen!({type:"error",
+                    message:data.error || `Something went wrong with new Transaction Try again later`})
+                }
+            })
+            handleToggle()
     }
 
+    const handleChange = (evt:ChangeEvent<HTMLInputElement>) => {
+        const value = evt.target.name === 'image'
+          ? evt.target.files![0] : evt.target.value
+        // setValues({...values,  [evt.target.name]: value })
+        setValues({...values,[evt.target.name]:value})
+    }
     return(
-        <Dialog onClose={handleToggle} aria-labelledby="simple-dialog-title" open={open}>
-          <DialogTitle id="simple-dialog-title">Create A New Request</DialogTitle>
+        <Dialog onClose={handleToggle}  maxWidth={"sm"} fullWidth={true}
+            aria-labelledby="simple-dialog-title"
+            open={open}>
+          <DialogTitle id="simple-dialog-title">Create A New Transaction</DialogTitle>
           <DialogContent style={{
               display:"flex",
               flexDirection:"column",
               justifyContent:"space-between"
           }}>
-              <input type="file" accept="image/**" style={{display:"hidden"}} id="Image-input"/>
-              <Button component="span" >
-                  <BurstModeIcon/>
-              </Button>
+              <Box style={{
+                  display:'flex',
+                  flexDirection:"column",
+                  alignItems:"center",
+                  justifyContent:"center"
+              }}>
+                  <Typography variant="caption" >
+                      {values.image ? values.image?.name : "Upload Image"}
+                  </Typography>
+
+                <input name="image" onChange={handleChange} type="file" accept="image/**" style={{display:"none"}}
+                id="Image-input"/>
+                <label htmlFor="Image-input">
+                    <Button component="span">
+                        <BurstModeIcon/>
+                    </Button>
+                </label>
+              </Box>
               <TextField
                 id="outlined-multiline-static"
-                label="Comment"
-                multiline
-                rows={4}
+                label="Comment" name="comment"
+                multiline onChange={handleChange}
+                value={values.comment}
+                rows={10}
                 defaultValue="Input Any comment You would like us to know"
                 variant="outlined"
                 style={{
@@ -92,7 +123,7 @@ const DialogComponent:React.SFC<IProps> = ({open,handleToggle,...props}) => {
             />
           </DialogContent>
           <DialogActions>
-              <Button style={{
+              <Button onClick={handleToggle} style={{
                   backgroundColor:red[100],
                   color:red[900],
                   padding:'.5em 1.5em'
