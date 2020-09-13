@@ -2,6 +2,10 @@ interface ICredential {
     userId:string;
     token:string;
 }
+interface ICardCredential {
+    token:string;
+    cardId:string
+}
 
 interface IQuery {
     limit:number;
@@ -13,6 +17,10 @@ const defaultQuery = {
     page:1
 }
 
+
+interface IBody {
+    status:string
+}
 
 export const create = async (body:any,credential:ICredential) => {
     try{
@@ -57,6 +65,22 @@ export const getCardsDetail = async (token:string,signal:any) => {
                 "Authorization":`Bearer ${token}`
             },
             signal
+        })
+        return await response.json()
+    }catch(err){
+        console.log(err)
+    }
+}
+export const updateCardStatus = async (credential:ICardCredential,body:IBody) => {
+    try{
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/card/${credential.cardId}`,{
+            method:"PUT",
+            headers:{
+                Accept:"application/json",
+                Authorization:`Bearer ${credential.token}`,
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(body)
         })
         return await response.json()
     }catch(err){

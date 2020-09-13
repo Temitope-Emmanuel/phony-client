@@ -3,13 +3,14 @@ import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
 import {Table,TableBody,TableCell,TableContainer,TableHead,TableRow} from '@material-ui/core';
 import {Accordion,AccordionDetails,AccordionSummary,AccordionActions} from "@material-ui/core"
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import {Button,Box,TablePagination} from "@material-ui/core"
+import {Button,ButtonGroup,Box,TablePagination} from "@material-ui/core"
 import Dialog from './Dialog'
 import CheckIcon from "@material-ui/icons/CheckBoxSharp"
 import {green,deepOrange,orange} from "@material-ui/core/colors"
 import {ICard} from "./UserComponent"
-import {getUserCard} from "./api-card"
+import {getUserCard,updateCardStatus} from "./api-card"
 import {retrieveJwt,IToken} from "../auth/auth-helper"
+import {DialogContext} from "../config/SnackContext"
 
 
 const useStyles = makeStyles((theme:Theme) => (
@@ -151,6 +152,7 @@ interface IProps {
 
 const SimpleTable:React.SFC<IProps> = function(props){
     const classes = useStyles()
+    const context = React.useContext(DialogContext)
     const [expanded, setExpanded] = React.useState<string | boolean>(false);
     const [open,setOpen] = React.useState(false)
     // const [page, setPage] = React.useState(2);
@@ -172,7 +174,6 @@ const SimpleTable:React.SFC<IProps> = function(props){
             limit:detail.limit,
             page:page+1
           }).then((data) => {
-            console.log("this is the return value",data)
           if(data.docs){
             setCard(data.docs)
             setDetail({limit:data.limit,total:data.total,page:data.page,pages:data.pages})
@@ -180,7 +181,6 @@ const SimpleTable:React.SFC<IProps> = function(props){
         })
       }
     }
-
     React.useEffect(() => {
       const abortController = new AbortController()
       const {signal} = abortController
@@ -189,6 +189,37 @@ const SimpleTable:React.SFC<IProps> = function(props){
         abortController.abort()
       }
     },[])
+    const newCardSet = (idx:number,card:ICard) => {
+      const cardArr = cards
+      console.log("calling the new card set with icard",card,idx)
+      const newCard = (cardArr as ICard[]).splice(idx,1,card)
+      console.log("this is the new card")
+      setCard(cardArr) 
+    }
+
+    const handleCardStatus = (type:string,id:string) => () => {
+      const token = {
+        token:(jwt as IToken).token,
+        cardId:id
+      }
+
+      const foundIdx = cards?.findIndex((card,idx) => card._id === id)
+        const updatedCard = {...(cards as ICard[])[(foundIdx as number)],status:type}
+        newCardSet((foundIdx as number),updatedCard)
+      
+      updateCardStatus(token,{status:type}).then(data => {
+        if(data){
+          if(data.message){
+            context.handleOpen!({type:"success",message:`Transaction of id ${id} has been updated`})
+          }else{
+            context.handleOpen!({type:"error",message:data.error || "Somehting went wrong"})  
+          }
+        }else{
+          context.handleOpen!({type:"info",message:`Something went wrong`})
+          
+        }
+      })
+    }
 
     // const handleChangePage = ( event:unknown, newPage:number) => {
     //   setPage(newPage);
@@ -236,7 +267,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
                     <TableCell align="right"><span>{`${card.comment.substring(0,40)}...`}</span></TableCell>
                     <TableCell className={classes.statusContainer}
                     align="right"><span>{card.status === "Success" ? "Success"
-                      : "Pending"}</span><CheckIcon/>
+                      : card.status === "Failed" ? "Failed" : "Pending"}</span><CheckIcon/>
                     </TableCell>
                   </AccordionSummary>
                   <AccordionDetails className={classes.details}>
@@ -255,6 +286,32 @@ const SimpleTable:React.SFC<IProps> = function(props){
                         </Link> */}
                     </div>
                   </AccordionDetails>
+                  <AccordionActions>
+                    {
+                      card.status === "Pending" ?
+                      <ButtonGroup>
+                        <Button onClick={handleCardStatus("Success",card._id)} style={{
+                          backgroundColor:"black",
+                          color:deepOrange["A200"]
+                        }}>
+                          Complete Transaction
+                        </Button>
+                        <Button onClick={handleCardStatus("Failed",card._id)} style={{
+                          backgroundColor:deepOrange["A200"],
+                          color:"black"
+                        }}>
+                          Reject Transaction
+                        </Button>
+                      </ButtonGroup> : 
+                      card.status === "Failed" && 
+                      <Button onClick={handleCardStatus("Success",card._id)} style={{
+                        backgroundColor:"black",
+                        color:deepOrange["A200"]
+                      }}>
+                        Complete Transaction
+                      </Button>
+                    }
+                  </AccordionActions>
                 </Accordion>
               </TableRow>
               ))}

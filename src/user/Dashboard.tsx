@@ -189,7 +189,7 @@ const Dashboard:React.SFC<IProps> = (props) => {
                 totalTransaction = data.length
                 setUserDetail({...props.user,
                     pendingTransaction,successfulTransaction
-                    ,totalTransaction:props.user.card?.length
+                    ,totalTransaction
                 })
             })
         }else{
@@ -211,7 +211,6 @@ const Dashboard:React.SFC<IProps> = (props) => {
     const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
         setBTC({...BTC,[e.target.name]:e.target.value})
     }
-
     return(
         <Box className={classes.root}>
         <Box className={classes.walletContainer}>
