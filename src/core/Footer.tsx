@@ -179,7 +179,7 @@ const Footer = function(){
     const classes = useStyles()
 
     return(
-        <Box className={classes.root}>
+        <Box id="Footer" className={classes.root}>
             <Box className={classes.footerContainer}>
                     <Box className={classes.title}>
                     <AcUnitIcon/>

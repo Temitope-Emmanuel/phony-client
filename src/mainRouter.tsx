@@ -3,10 +3,10 @@ import {Route,Switch,Redirect} from "react-router-dom"
 import Home from "./core/Home"
 import Navbar from "./core/Navbar"
 import Login from "./auth/Login"
-import SnackProvider,{DialogContext} from "./config/SnackContext"
+import SnackProvider from "./config/SnackContext"
 import UserComponent from "./user/UserComponent"
-
-
+import Rating from "./other/Rating"
+import Referral from "./other/Referral"
 
 
 const mainRouter =() => {
@@ -14,6 +14,8 @@ const mainRouter =() => {
         <>
         <Navbar/>
         <Switch>
+            <Route path="/rates" component={Rating} />
+            <Route path="/referral" component={Referral} />
             <Route path="/user/:userId" component={UserComponent} />
             <Route path="/login" component={Login} />
             <Route path="/register" component={Login} />

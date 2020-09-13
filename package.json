@@ -35,6 +35,11 @@
     "prettier-watch": "onchange 'src/**/*.ts' -- prettier --write {{changed}}",
     "test:node": "cross-env NODE_ENV=test jest  --forceExit --maxWorkers=1"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run prettier-format && npm run lint"
+    }
+  },
   "eslintConfig": {
     "extends": "react-app"
   },

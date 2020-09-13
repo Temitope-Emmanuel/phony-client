@@ -183,18 +183,18 @@ const Navbar = () => {
             <Link to="/user">
               Blog
             </Link>
-            <Link to="/">
+            <Link to="/referral">
               Referral
             </Link>
             <Link to="/rates">
               Rates
             </Link>
-            <Link to="/">
+            <a href="#Footer">
               Contact
-            </Link>
-            <Link to="/">
+            </a>
+            {/* <Link to="/">
               Newsletter
-            </Link>
+            </Link> */}
           </div>
           <div className={classes.sectionMobile}>
             <IconButton

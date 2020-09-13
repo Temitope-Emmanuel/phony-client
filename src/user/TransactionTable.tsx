@@ -1,16 +1,16 @@
-import React from "react"
-import clsx from "clsx"
+import React,{ChangeEvent} from "react"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
 import {Table,TableBody,TableCell,TableContainer,TableHead,TableRow} from '@material-ui/core';
 import {Accordion,AccordionDetails,AccordionSummary,AccordionActions} from "@material-ui/core"
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Paper from '@material-ui/core/Paper';
-import {Button,Box} from "@material-ui/core"
+import {Button,Box,TablePagination} from "@material-ui/core"
 import Dialog from './Dialog'
-import BurstModeIcon from '@material-ui/icons/BurstMode';
 import CheckIcon from "@material-ui/icons/CheckBoxSharp"
 import {green,deepOrange,orange} from "@material-ui/core/colors"
 import {ICard} from "./UserComponent"
+import {getUserCard} from "./api-card"
+import {retrieveJwt,IToken} from "../auth/auth-helper"
+
 
 const useStyles = makeStyles((theme:Theme) => (
     createStyles({
@@ -137,19 +137,64 @@ const useStyles = makeStyles((theme:Theme) => (
     })
 ))
 
-function createData(name:number, calories:string, fat:string, carbs:boolean, protein:number) {
-    return { name, calories, fat, carbs, protein };
+
+// interface IProps {
+//   cards?:ICard[];
+//   updateCardList(arg:ICard):void
+// }
+interface IDetail {
+  limit:number;
+  page:number;
+  total:number;
+  pages:number
 }
 
-interface IProps {
-  cards:ICard[];
-  updateCardList(arg:ICard):void
-}
-
-const SimpleTable:React.SFC<IProps> = function({cards,updateCardList}){
+const SimpleTable = function(){
     const classes = useStyles()
     const [expanded, setExpanded] = React.useState<string | boolean>(false);
-    const [open,setOpen] = React.useState(true)
+    const [open,setOpen] = React.useState(false)
+    // const [page, setPage] = React.useState(2);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [cards,setCard ] = React.useState<ICard[]>()
+    const [detail,setDetail] = React.useState<IDetail>({
+      limit:10,
+      page:1,
+      total:0,
+      pages:0
+    })
+    const jwt = retrieveJwt()
+    
+    const loadNewCardSet = (e:any,page:number) => {
+      console.log("this is the number from load new card set",page)
+      getUserCard({token:(jwt as IToken).token
+        ,userId:(jwt as IToken).user._id},{
+          limit:detail.limit,
+          page:page+1
+        }).then((data) => {
+        if(data.docs){
+          setCard(data.docs)
+          setDetail({limit:data.limit,total:data.total,page:data.page,pages:data.pages})
+        }
+      })
+    }
+
+    React.useEffect(() => {
+      const abortController = new AbortController()
+      const {signal} = abortController
+      loadNewCardSet(null,detail.page)
+      return function (){
+        abortController.abort()
+      }
+    },[])
+
+    // const handleChangePage = ( event:unknown, newPage:number) => {
+    //   setPage(newPage);
+    // };
+  
+    const handleChangeRowsPerPage = (event:ChangeEvent<HTMLInputElement>) => {
+      setRowsPerPage(parseInt(event.target.value, 5));
+      // setPage(0);
+    };
   
     const handleToggle = () => {
         setOpen(!open)
@@ -157,6 +202,12 @@ const SimpleTable:React.SFC<IProps> = function({cards,updateCardList}){
     const handleChange = (panel:string) => (event:any, isExpanded:boolean) => {
       setExpanded(isExpanded ? panel : false);
     };
+    const updateCardList = (card:ICard) => {
+      const newCard = cards
+      newCard?.unshift(card)
+      setCard(newCard)
+    }
+
     return (
         <Box className={classes.root}>
           <h3>Most Recent Transaction</h3>
@@ -170,7 +221,7 @@ const SimpleTable:React.SFC<IProps> = function({cards,updateCardList}){
               </TableRow>
             </TableHead>
             <TableBody className={classes.tableContainer}>
-              {cards.map((card) => (
+              {cards && cards.map((card) => (
               <TableRow key={card._id}>
                 <Accordion className={classes.AccordionContainer}
                 key={card._id} expanded={expanded === card._id}
@@ -206,12 +257,26 @@ const SimpleTable:React.SFC<IProps> = function({cards,updateCardList}){
               ))}
             </TableBody>
           </Table>
+            <TablePagination style={{
+              width:"65%",
+              display:"flex",
+              margin:"1em 0",
+              marginLeft:"50%",
+              transform:"translateX(-50%)",
+              justifyContent:"center",
+              overflow:"hidden",
+              borderRadius:"5em",
+              backgroundColor:deepOrange["A200"]
+            }} onChangeRowsPerPage={handleChangeRowsPerPage}
+              page={detail!.page-1} onChangePage={loadNewCardSet}
+              count={detail!.total} rowsPerPage={detail!.limit} />
         </TableContainer>
-        <Button onClick={handleToggle} style={{
-          color:"rgba(0,0,0,.9)",
-          backgroundColor:deepOrange["A200"]
-          }}>Create New Transaction</Button>
-        <Dialog open={open} updateCardList={updateCardList} handleToggle={handleToggle} />
+          <Button onClick={handleToggle} style={{
+            color:"rgba(0,0,0,.9)",
+            backgroundColor:deepOrange["A200"]
+            }}>Create New Transaction</Button>
+          <Dialog open={open} updateCardList={updateCardList}
+           handleToggle={handleToggle} />
         </Box>
       );
 }    

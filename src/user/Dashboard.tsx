@@ -150,7 +150,6 @@ interface IParams {
 }
 interface IProps {
     user:IUser;
-    updateCardList(arg:ICard):void
 }
 
 interface IUserDetail extends IUser {
@@ -188,7 +187,8 @@ const Dashboard = (props:IProps) => {
             ,totalTransaction:props.user.card?.length
         })
     },[props.user])
-return(
+
+    return(
         <Box className={classes.root}>
         <Box className={classes.walletContainer}>
             <Box className={classes.acctContainer} style={{
@@ -259,9 +259,7 @@ return(
         </Box>
         <Box className={classes.transactionContainer}>
             <Box style={{width:"45",marginRight:"3em"}}>
-                {userDetail?.card &&
-                <TransactionTable updateCardList={props.updateCardList} cards={userDetail!.card}/>
-                }
+                <TransactionTable/>
             </Box>
             <Box style={{width:"40%"}}>
             <RatingCalculator/>

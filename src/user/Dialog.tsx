@@ -2,14 +2,14 @@ import React,{MouseEvent,ChangeEvent} from "react"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
 import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {Dialog,Typography,Box,DialogContent,TextField,DialogActions} from '@material-ui/core';
-import { blue,red } from '@material-ui/core/colors';
+import {Dialog,ButtonGroup,Typography,Box,DialogContent,TextField,DialogActions} from '@material-ui/core';
 import BurstModeIcon from '@material-ui/icons/BurstMode';
 import {DialogContext} from "../config/SnackContext"
 import {create} from "./api-card"
 import {retrieveJwt} from "../auth/auth-helper"
 import {useParams} from "react-router-dom"
 import {ICard} from "./UserComponent"
+import { blue,red,orange,deepOrange } from '@material-ui/core/colors';
 
 
 const useStyles = makeStyles((theme:Theme) => (
@@ -97,15 +97,22 @@ const DialogComponent:React.SFC<IProps> = ({open,updateCardList,handleToggle,...
                   alignItems:"center",
                   justifyContent:"center"
               }}>
-                  <Typography variant="caption" >
+                  <Typography style={{
+                      fontSize:"1.4em"
+                  }} variant="subtitle2" >
                       {values.image ? values.image?.name : "Upload Image"}
                   </Typography>
-
                 <input name="image" onChange={handleChange} type="file" accept="image/**" style={{display:"none"}}
                 id="Image-input"/>
                 <label htmlFor="Image-input">
                     <Button component="span">
-                        <BurstModeIcon/>
+                        <BurstModeIcon style={{
+                            backgroundColor:deepOrange["A700"],
+                            color:"black",
+                            borderRadius:"50%",
+                            fontSize:"3em",
+                            padding:".3em"
+                        }} />
                     </Button>
                 </label>
               </Box>
@@ -122,19 +129,25 @@ const DialogComponent:React.SFC<IProps> = ({open,updateCardList,handleToggle,...
                 }}
             />
           </DialogContent>
-          <DialogActions>
-              <Button onClick={handleToggle} style={{
-                  backgroundColor:red[100],
-                  color:red[900],
-                  padding:'.5em 1.5em'
-              }}>Cancel</Button>
-              <Button
-              onClick={handleSubmit} 
-              style={{
-                  backgroundColor:blue[100],
-                  color:blue[900],
-                  padding:'.5em 1em'
-              }}>Submit</Button>
+          <DialogActions style={{
+              display:"flex",
+              justifyContent:"center",
+              alignItems:"center"
+          }}>
+              <ButtonGroup>
+                <Button onClick={handleToggle} style={{
+                    backgroundColor:"black",
+                    color:deepOrange[900],
+                    padding:'.5em 1.5em'
+                }}>Cancel</Button>
+                <Button
+                onClick={handleSubmit} 
+                style={{
+                    backgroundColor:deepOrange[900],
+                    color:"black",
+                    padding:'.5em 1em'
+                }}>Submit</Button>
+              </ButtonGroup>
           </DialogActions>
         </Dialog>
     )

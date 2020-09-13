@@ -1,11 +1,11 @@
 
-interface IToken {
+export interface IToken {
     token:string;
     user:{
         username:string;
         email:string;
         role:string[],
-        _id:number
+        _id:string
     }
 }
 

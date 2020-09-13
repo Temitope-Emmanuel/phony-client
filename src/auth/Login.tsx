@@ -1,7 +1,7 @@
 import React from "react"
 import {Link,RouteComponentProps} from "react-router-dom"
 import {makeStyles,Theme,createStyles} from "@material-ui/core/styles"
-import {Box,Button,TextField,Typography,InputAdornment} from "@material-ui/core"
+import {Box,IconButton,Button,TextField,Typography,InputAdornment} from "@material-ui/core"
 import {mainBg} from "../assets/images/main"
 import {create,login} from "./api-auth"
 import useInputState from "../config/useInputState"
@@ -10,6 +10,7 @@ import {IDialog} from "../config/SnackContext"
 import {orange} from "@material-ui/core/colors"
 import UserIcon from '@material-ui/icons/SupervisedUserCircle';
 import PasswordShowIcon from '@material-ui/icons/VisibilityOff';
+import TicketIcon from '@material-ui/icons/ConfirmationNumber';
 import PasswordIcon from '@material-ui/icons/Visibility';
 import EmailIcon from '@material-ui/icons/Email';
 import saveJwt from "./auth-helper"
@@ -73,6 +74,7 @@ const Login = ({context,history,...props}:ILogin) => {
     const [username,setUsername,resetUsername] = useInputState("John@doe.com")
     const [email,setEmail,resetEmail] = useInputState("")
     const [password,setPassword,resetPassword] = useInputState("")
+    const [referral,setReferral,resetReferral] = useInputState("")
     const [state,setState] = React.useState({
         submitting:false,
         isValid:false,
@@ -83,6 +85,7 @@ const Login = ({context,history,...props}:ILogin) => {
         resetUsername()
         resetEmail()
         resetPassword()
+        resetInput()
     }
 
     const isValid = () => {
@@ -105,8 +108,8 @@ const Login = ({context,history,...props}:ILogin) => {
         const payload = {
             email:email.toLowerCase(),
             password,
-            // username
-            ...(!isLogin && {username})
+            ...(!isLogin && {username}),
+            ...(referral && {referral})
         }
         const apiCall = isLogin ? login(payload) : create(payload)
         apiCall.then(data => {
@@ -116,14 +119,10 @@ const Login = ({context,history,...props}:ILogin) => {
                 if(data.error){
                     context.handleOpen!({message:data.error,type:"error"})
                 }else{
-                    // context.handleOpen!({message:data.message,type:"success"})
                     saveJwt({user:data.data,token:data.token})
                     history.push(`/user/${data.data._id}`)
                     resetInput()
                 }
-                // setTimeout(() => {
-                    //     history.push("/")
-                    // }, 1000);
             }else{
                 context.handleOpen!({message:"Something is wrong",type:"info"})
             }
@@ -138,6 +137,7 @@ const Login = ({context,history,...props}:ILogin) => {
                 </Typography>
                 <form className={classes.formContainer} >
                     {!isLogin &&
+                    <>
                     <TextField
                     label='Add Username'
                     InputProps={{
@@ -150,6 +150,20 @@ const Login = ({context,history,...props}:ILogin) => {
                         value={username}
                         onChange={setUsername}
                     />
+                    <TextField
+                    label='Input Referral Code'
+                    helperText="This input is not necessary"
+                    value={referral}
+                    onChange={setReferral}
+                    InputProps={{
+                        endAdornment:(
+                            <InputAdornment position="end" >
+                                <TicketIcon/>
+                            </InputAdornment>
+                        )
+                    }}
+                    />
+                    </>
                     }
                     <TextField
                     label='Add Email'
@@ -165,10 +179,13 @@ const Login = ({context,history,...props}:ILogin) => {
                     />
                     <TextField
                     label='Create new password'
+                    type={state.showPassword ? "password" : "text"}
                     InputProps={{
                         endAdornment:(
                             <InputAdornment onClick={handleToggle}  position="end" >
-                                {state.showPassword ? <PasswordIcon/> : <PasswordShowIcon/>}
+                                <IconButton>
+                                    {state.showPassword ? <PasswordIcon/> : <PasswordShowIcon/>}
+                                </IconButton>
                             </InputAdornment>
                         )
                     }}

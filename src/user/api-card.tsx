@@ -20,3 +20,32 @@ export const create = async (body:any,credential:ICredential) => {
         console.log(err)
     }
 }
+
+interface IQuery {
+    limit:number;
+    page:number
+}
+
+const defaultQuery = {
+    limit:5,
+    page:1
+}
+
+export const getUserCard = async (credential:ICredential,query:IQuery=defaultQuery ) => {
+    try{
+        // const urlQuery = new URL(`${process.env.REACT_APP_SERVER_URL}/api/card/user/${credential.userId}`)
+        // urlQuery.searchParams("limit",query.limit)
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/card/user/${credential.userId}?limit=${query.limit}&page=${query.page}`,{
+            method:"GET",
+            headers:{
+                Accept:"application/json",
+                "Content-Type":"application/json",
+                Authorization:`Bearer ${credential.token}`
+            },
+            // body:JSON.stringify(query)
+        })
+        return await response.json()
+    }catch(err){
+        console.log(err)
+    }
+}

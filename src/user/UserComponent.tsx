@@ -141,19 +141,7 @@ const UserComponent = function(props:RouteComponentProps){
         abortController.abort()
       }
       }},[])
-
-      const updateCardList = (card:ICard) => {
-        const newCard = (user as IUser).card
-        newCard!.unshift(card)
-        const newUser:IUser = {
-          ...(user as IUser),card:newCard
-        }
-        setUser(newUser)
-      }
     
-      console.log(user)
-      
-
   // console.log("render")
   // if(!Boolean(user)){
   //   return <div>still loading</div>
@@ -193,7 +181,7 @@ const UserComponent = function(props:RouteComponentProps){
             >
               {
                 user?.username &&
-              <Dashboard updateCardList={updateCardList} user={user} />
+              <Dashboard user={user} />
               }
             </TabPanel>
             <TabPanel value={value} index={1}
@@ -205,11 +193,10 @@ const UserComponent = function(props:RouteComponentProps){
                padding:"0 1%",
                width:"98%"
              }}>
-               {
-                 user?.card &&
-                <TransactionTable cards={user.card}
-                 updateCardList={updateCardList} />
-               }
+               {/* {
+                 user?.card && */}
+                <TransactionTable/>
+               {/* } */}
                </div>
             </TabPanel>
             <TabPanel value={value} index={2}
