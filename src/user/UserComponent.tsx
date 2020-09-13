@@ -101,7 +101,7 @@ export interface ICard {
 export interface IUser {
   username:string;
   email:string;
-  role:string[];
+  admin:boolean;
   verified:boolean;
   card?:ICard[];
   referral:string;
@@ -129,19 +129,22 @@ const UserComponent = function(props:RouteComponentProps){
       const signal = abortController.signal
       if(jwt){
         read({signal,userId:jwt?.user._id},jwt.token).then(data => {
-          if(data.user){
+          if(data){
+            if(data.user){
             setUser(data.user)
-            context.handleOpen!({type:"info",message:`Welcome ${data.user.username}`})
+            context.handleOpen!({type:"info",message:`Welcome ${data.user.admin && "Admin"} ${data.user.username}`})
           }else{
             context.handleOpen!({type:"error",message:data.error || "Something went wrong"})
           }
+          }else{
+            context.handleOpen!({type:"info",message:`Something went wrong`})  
+          }
         })
-
       return function(){
         abortController.abort()
       }
       }},[])
-    
+
   // console.log("render")
   // if(!Boolean(user)){
   //   return <div>still loading</div>
@@ -191,18 +194,22 @@ const UserComponent = function(props:RouteComponentProps){
                justifyContent:"center",
                alignItems:"center",
                padding:"0 1%",
-               width:"98%"
+               width:"98%",
+               margin:"5em 0"
              }}>
-               {/* {
-                 user?.card && */}
-                <TransactionTable/>
-               {/* } */}
+              {
+                user?.username && 
+                <TransactionTable admin={user.admin} />
+              }
                </div>
             </TabPanel>
             <TabPanel value={value} index={2}
              dir={theme.direction}
              >
-              Item Three
+               {
+                 user?.admin &&
+              <Dashboard user={user} />
+               }
             </TabPanel>
           </SwipeableViews>
         <Footer/>

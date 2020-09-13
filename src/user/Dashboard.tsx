@@ -1,17 +1,14 @@
-import React from "react"
-import {Box,Divider,Button,IconButton} from "@material-ui/core"
+import React,{ChangeEvent} from "react"
+import {Box,TextField,Grow,Divider,Button,IconButton} from "@material-ui/core"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import SimpleTable from "./TransactionTable"
 import RatingCalculator from "../other/RatingCalculator"
-import {orange,deepOrange,amber} from "@material-ui/core/colors"
-import {read} from "./api-user"
-import {retrieveJwt} from "../auth/auth-helper"
-import {IDialog} from "../config/SnackContext"
+import {orange,deepOrange} from "@material-ui/core/colors"
+import {getCardsDetail} from "./api-card"
 import TransactionTable from "./TransactionTable"
 import {IUser,ICard} from "./UserComponent"
-
+import {retrieveJwt,IToken} from "../auth/auth-helper"
 
 const useStyles = makeStyles((theme:Theme) => (
     createStyles({
@@ -145,9 +142,6 @@ const useStyles = makeStyles((theme:Theme) => (
     })
 ))
 
-interface IParams {
-    userId:string
-}
 interface IProps {
     user:IUser;
 }
@@ -162,31 +156,61 @@ interface adapter {
     [key:string]:string | number
 }
 
-const Dashboard = (props:IProps) => {
+const Dashboard:React.SFC<IProps> = (props) => {
     const classes = useStyles()
-    const jwt = retrieveJwt()
-    const [userDetail,setUserDetail] = React.useState<IUserDetail>()
-    const [message,setMessage] = React.useState({
-        type:"success",
-        text:""
+    const [BTC,setBTC] = React.useState({
+        buy:400,
+        sell:425
     })
+    const [open,setOpen] = React.useState(false)
+    const [userDetail,setUserDetail] = React.useState<IUserDetail>()
+    const {admin} = props.user
+
+    const handleToggle = () => {
+        setOpen(!open)
+    }
+    // const {admin} = (jwt as IToken).user
     React.useEffect(() => {
         let totalTransaction:number = 0;
         let pendingTransaction:number = 0;
         let successfulTransaction:number = 0;
-
-        props.user!.card?.map((card,idx) => {
-            if(card.status === "Pending"){
-                pendingTransaction++
-            }else{
-                successfulTransaction++
-            }
-        })
-        setUserDetail({...props.user,
-            pendingTransaction,successfulTransaction
-            ,totalTransaction:props.user.card?.length
-        })
+        if(props.user.admin){
+            const jwt = retrieveJwt()
+            const abortController = new AbortController()
+            const signal = abortController.signal
+            getCardsDetail((jwt as IToken).token,signal).then(data => {
+                data.map((card:ICard,idx:number) => {
+                    if(card.status === "Pending"){
+                        pendingTransaction++
+                    }else{
+                        successfulTransaction++
+                    }    
+                })
+                totalTransaction = data.length
+                setUserDetail({...props.user,
+                    pendingTransaction,successfulTransaction
+                    ,totalTransaction:props.user.card?.length
+                })
+            })
+        }else{
+            props.user!.card?.map((card,idx) => {
+                if(card.status === "Pending"){
+                    pendingTransaction++
+                }else{
+                    successfulTransaction++
+                }
+            })
+            totalTransaction = props.user!.card?.length || 0
+            setUserDetail({...props.user,
+                pendingTransaction,successfulTransaction
+                ,totalTransaction:props.user.card?.length
+            })
+        }
     },[props.user])
+
+    const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
+        setBTC({...BTC,[e.target.name]:e.target.value})
+    }
 
     return(
         <Box className={classes.root}>
@@ -205,17 +229,20 @@ const Dashboard = (props:IProps) => {
                             alignItems:"center",
                             flexDirection:"column"
                         }}>
-                            {/* <h3>WALLET BALANCE</h3>
-                            <span>0.00NGN</span> */}
-                            <h3>REFERRAL CODE</h3>
-                            <span>{props.user.referral}</span>
+                            {
+                                admin ?
+                                <h3>Admin Mode</h3> : 
+                                <>
+                                <h3>REFERRAL CODE</h3>
+                                <span>{props.user.referral}</span>
+                                </>
+                            }
                         </Box>
                     </Box>
                     <Box style={{
                         flexDirection:"column",
                     }}>
-                        {/* <h3>EARNING HISTORY</h3> */}
-                        <h3>TRANSACTION HISTORY</h3>
+                        <h3>{admin ? "TOTAL TRANSACTION" : "TRANSACTION HISTORY"}</h3>
                         <Box className={classes.amountContainer}>    
                         {userDetail && ["pendingTransaction",
                                 "successfulTransaction",
@@ -237,29 +264,58 @@ const Dashboard = (props:IProps) => {
                         BTC RATES TODAY
                     </h4>
                     <Box>
-                        <h6>BUY AT: 440/$</h6>
-                        <h6>SELL AT:405/$</h6>
+                        <h6>BUY AT: {BTC.buy}/$</h6>
+                        <h6>SELL AT: {BTC.sell}/$</h6>
                     </Box>
                 </Box>
                 <Divider orientation="vertical" flexItem/>
-                <Box>
-                    <h4>Welcome to Phonystore. Click below to begin</h4>
+                <Box style={{
+                    display:"flex",
+                    justifyContent:"center",
+                    alignItems:"center",
+                    flexDirection:"column",
+                    width:"50%"
+                }}>
+                    {!admin &&
+                        <h4>Welcome to Phonystore. Click below to begin</h4>
+                    }
+                    {open && 
+                    <Grow in={open}>
+                        <>
+                            <TextField name="buy" label="BUY PRICE"
+                             value={BTC.buy} onChange={handleChange}
+                            />
+                            <TextField name="sell" label="SELL PRICE"
+                             value={BTC.sell} onChange={handleChange}
+                            />
+                        </>
+                    </Grow>}
                     <Box>
-                        <Button style={{backgroundColor:"rgba(0,0,0,.9)",color:deepOrange["A200"]}}>
+                        {admin ? 
+                            <Button onClick={handleToggle} 
+                            style={{backgroundColor:"rgba(0,0,0,.9)",
+                            color:deepOrange["A200"]}}>
+                                <PlayArrowIcon/>
+                                Change BTC rates
+                            </Button> :
+                            <>
+                            <Button style={{backgroundColor:"rgba(0,0,0,.9)",color:deepOrange["A200"]}}>
+                                <PlayArrowIcon/>
+                                Start Trade
+                            </Button>
+                            <Button style={{color:"rgba(0,0,0,.9)",backgroundColor:deepOrange["A200"]}}>
                             <PlayArrowIcon/>
-                            Start Trade
-                        </Button>
-                        <Button style={{color:"rgba(0,0,0,.9)",backgroundColor:deepOrange["A200"]}}>
-                            <PlayArrowIcon/>
-                            Buy Airtime
-                        </Button>
+                                Buy Airtime
+                            </Button>
+                            </>
+                        }
                     </Box>
                 </Box>
             </Box>
         </Box>
         <Box className={classes.transactionContainer}>
             <Box style={{width:"45",marginRight:"3em"}}>
-                <TransactionTable/>
+                <TransactionTable admin={admin} />
             </Box>
             <Box style={{width:"40%"}}>
             <RatingCalculator/>

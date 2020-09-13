@@ -138,10 +138,6 @@ const useStyles = makeStyles((theme:Theme) => (
 ))
 
 
-// interface IProps {
-//   cards?:ICard[];
-//   updateCardList(arg:ICard):void
-// }
 interface IDetail {
   limit:number;
   page:number;
@@ -149,7 +145,11 @@ interface IDetail {
   pages:number
 }
 
-const SimpleTable = function(){
+interface IProps {
+  admin:boolean;
+}
+
+const SimpleTable:React.SFC<IProps> = function(props){
     const classes = useStyles()
     const [expanded, setExpanded] = React.useState<string | boolean>(false);
     const [open,setOpen] = React.useState(false)
@@ -158,30 +158,33 @@ const SimpleTable = function(){
     const [cards,setCard ] = React.useState<ICard[]>()
     const [detail,setDetail] = React.useState<IDetail>({
       limit:10,
-      page:1,
+      page:0,
       total:0,
       pages:0
     })
     const jwt = retrieveJwt()
     
     const loadNewCardSet = (e:any,page:number) => {
-      console.log("this is the number from load new card set",page)
-      getUserCard({token:(jwt as IToken).token
-        ,userId:(jwt as IToken).user._id},{
-          limit:detail.limit,
-          page:page+1
-        }).then((data) => {
-        if(data.docs){
-          setCard(data.docs)
-          setDetail({limit:data.limit,total:data.total,page:data.page,pages:data.pages})
-        }
-      })
+      if(jwt){
+        console.log("page number",page)
+        getUserCard({token:(jwt as IToken).token
+          ,userId:(jwt as IToken).user._id},{
+            limit:detail.limit,
+            page:page+1
+          }).then((data) => {
+            console.log("this is the return value",data)
+          if(data.docs){
+            setCard(data.docs)
+            setDetail({limit:data.limit,total:data.total,page:data.page,pages:data.pages})
+          }
+        })
+      }
     }
 
     React.useEffect(() => {
       const abortController = new AbortController()
       const {signal} = abortController
-      loadNewCardSet(null,detail.page)
+      loadNewCardSet(null,1)
       return function (){
         abortController.abort()
       }
@@ -268,7 +271,7 @@ const SimpleTable = function(){
               borderRadius:"5em",
               backgroundColor:deepOrange["A200"]
             }} onChangeRowsPerPage={handleChangeRowsPerPage}
-              page={detail!.page-1} onChangePage={loadNewCardSet}
+              page={detail!.page -1} onChangePage={loadNewCardSet}
               count={detail!.total} rowsPerPage={detail!.limit} />
         </TableContainer>
           <Button onClick={handleToggle} style={{

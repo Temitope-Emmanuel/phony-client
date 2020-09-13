@@ -4,7 +4,7 @@ export interface IToken {
     user:{
         username:string;
         email:string;
-        role:string[],
+        admin:boolean;
         _id:string
     }
 }

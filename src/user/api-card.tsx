@@ -1,9 +1,18 @@
-
-
 interface ICredential {
     userId:string;
     token:string;
 }
+
+interface IQuery {
+    limit:number;
+    page:number
+}
+
+const defaultQuery = {
+    limit:5,
+    page:1
+}
+
 
 export const create = async (body:any,credential:ICredential) => {
     try{
@@ -20,19 +29,9 @@ export const create = async (body:any,credential:ICredential) => {
         console.log(err)
     }
 }
-
-interface IQuery {
-    limit:number;
-    page:number
-}
-
-const defaultQuery = {
-    limit:5,
-    page:1
-}
-
 export const getUserCard = async (credential:ICredential,query:IQuery=defaultQuery ) => {
     try{
+        console.log("calling get user")
         // const urlQuery = new URL(`${process.env.REACT_APP_SERVER_URL}/api/card/user/${credential.userId}`)
         // urlQuery.searchParams("limit",query.limit)
         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/card/user/${credential.userId}?limit=${query.limit}&page=${query.page}`,{
@@ -43,6 +42,21 @@ export const getUserCard = async (credential:ICredential,query:IQuery=defaultQue
                 Authorization:`Bearer ${credential.token}`
             },
             // body:JSON.stringify(query)
+        })
+        return await response.json()
+    }catch(err){
+        console.log(err)
+    }
+}
+export const getCardsDetail = async (token:string,signal:any) => {
+    try{
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/card/all`,{
+            method:"GET",
+            headers:{
+                "Accept":"application/json",
+                "Authorization":`Bearer ${token}`
+            },
+            signal
         })
         return await response.json()
     }catch(err){

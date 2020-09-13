@@ -85,7 +85,7 @@ const Login = ({context,history,...props}:ILogin) => {
         resetUsername()
         resetEmail()
         resetPassword()
-        resetInput()
+        resetReferral()
     }
 
     const isValid = () => {

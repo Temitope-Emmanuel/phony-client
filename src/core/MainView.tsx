@@ -91,8 +91,8 @@ const MainView = () => {
                     <Link to={`/user/${jwt.user._id}`} >
                         Profile
                     </Link>:
-                    <Link to="/login">
-                    SIGN UP
+                    <Link to="/register">
+                        SIGN UP 
                     </Link>}
                 </Button>
                 <Button style={{color:"rgba(0,0,0,1)",backgroundColor:deepOrange[900]}}>

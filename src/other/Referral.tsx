@@ -46,7 +46,7 @@ const useStyles = makeStyles({
         alignItems:"center",
         flexDirection:"column",
         "& > h4":{
-            marginTop:".5em"
+            margin:".5em 0"
         }
     },
     table: {
