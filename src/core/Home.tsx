@@ -44,8 +44,8 @@ const Home = () => {
           <Atlas/>
           <GetStarted/>
           <Box className={classes.ImageContainer}>
-            <img src={Img2} />
-            <img src={Img3} />
+            <img data-aos="flip-right" src={Img2} />
+            <img data-aos="flip-left" src={Img3} />
           </Box>
           <Services/>
           <Footer/>

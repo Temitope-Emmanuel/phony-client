@@ -33,7 +33,7 @@ type MessageType = {
 interface IProps {
     open:boolean;
     handleToggle : () => void;
-    updateCardList(arg:ICard):void
+    updateCardList?(arg:ICard):void
 }
 
 
@@ -48,7 +48,7 @@ interface IParams {
     userId:string
 }
 
-const DialogComponent:React.SFC<IProps> = ({open,updateCardList,handleToggle,...props}) => {
+const DialogComponent:React.SFC<IProps> = ({open,handleToggle,...props}) => {
     const context = React.useContext(DialogContext)
     const classes = useStyles()
     const params:IParams | {} = useParams()
@@ -63,9 +63,10 @@ const DialogComponent:React.SFC<IProps> = ({open,updateCardList,handleToggle,...
         newCard.append("comment",values.comment)        
         newCard.append("image",values.imageLink)
             create(newCard,{userId:(params as IParams).userId,token:jwt!.token}).then(data => {
-                console.log("this is the data",data)
                 if(data.message){
-                    updateCardList(data.data)
+                    if(props.updateCardList){
+                        props.updateCardList(data.data)
+                    }
                     context.handleOpen!({type:"success",message:"New Transaction created Successful"})
                 }else{
                     context.handleOpen!({type:"error",
@@ -140,7 +141,7 @@ const DialogComponent:React.SFC<IProps> = ({open,updateCardList,handleToggle,...
                     color:deepOrange[900],
                     padding:'.5em 1.5em'
                 }}>Cancel</Button>
-                <Button
+                <Button disabled={values.comment.length < 5}
                 onClick={handleSubmit} 
                 style={{
                     backgroundColor:deepOrange[900],

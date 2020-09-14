@@ -62,12 +62,10 @@ const useStyles = makeStyles((theme:Theme) =>
           }
     })
 )
-
 type bpi = {
     code:string;
     rate:string
 }
-
 type rate = {
     NGN:bpi;
     USD:bpi;
@@ -89,6 +87,7 @@ const Atlas = () => {
     const [rates,setRates] = useState(initialState)
 
     useEffect(() => {
+      
         // const apiCall = async function(){
         //     const response = await fetch(`https://api.coindesk.com/v1/${"bpi"}/currentprice/NGN.json`,{
         //         method:"GET",
@@ -106,28 +105,33 @@ const Atlas = () => {
 
     return(
         <>
-            <Box style={{
+            <div data-aos="fade" data-aos-delay={500} style={{
                 position:"sticky",
                 top:0
             }} className={classes.ratesContainer}>
                 {rates.NGN &&
                 <>
-                    <p>{rates.NGN.code} - {rates.NGN.rate}</p>
-                    <p>{rates.USD.code} - {rates.USD.rate}</p>
+                    <p data-aos="fade" data-aos-delay={1000}>{rates.NGN.code} - {rates.NGN.rate}</p>
+                    <p data-aos="fade" data-aos-delay={1100}>{rates.USD.code} - {rates.USD.rate}</p>
                 </>
             }
-            </Box>
+            </div>
         
             <Box className={classes.container}>
-                <h2>24/7 WE GOT YOU</h2>
+                <h2 data-aos="zoom-right">24/7 WE GOT YOU</h2>
                 <p>Always here to do business with you</p>
             </Box>
             <Box className={classes.root}>
-            <img style={{left:"30%",top:"15%",height:"5em"}} src={Person1}/>
-            <img style={{left:"43%",top:"45%",height:"6em"}} src={Person2}/>
-            <img style={{left:"60%",top:"65%",height:"6.5em"}} src={Person3}/>
-            <img style={{left:"60%",top:"45%",height:"3em"}} src={Person4}/>
-            <img style={{left:"55%",top:"10%",height:"7em"}} src={Person5}/>
+            <img data-aos="fade" data-aos-delay={500} style={{left:"30%",top:"15%",height:"5em"}}
+                 src={Person1}/>
+            <img data-aos="fade" data-aos-delay={700} style={{left:"43%",top:"45%",height:"6em"}} 
+               src={Person2}/>
+            <img data-aos="fade" data-aos-delay={900} style={{left:"60%",top:"65%",height:"6.5em"}}
+                src={Person3}/>
+            <img data-aos="fade" data-aos-delay={1000} style={{left:"60%",top:"45%",height:"3em"}} 
+               src={Person4}/>
+            <img data-aos="fade" data-aos-delay={1100} style={{left:"55%",top:"10%",height:"7em"}} 
+               src={Person5}/>
             </Box>
         </>
     )

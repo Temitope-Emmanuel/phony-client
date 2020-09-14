@@ -89,27 +89,28 @@ const useStyles = makeStyles(({breakpoints,...theme}:Theme) =>
 interface IProps { 
     heading:string;
     content:string;
-    img:string
+    img:string;
+    duration:number;
 }
 
 const GetStartedCard:React.SFC<IProps> = (props) => {
     const classes = useStyles()
 
     return(
-        <Box className={classes.root}>
-            <Box className={classes.detailContainer}>
+        <div data-aos="fade-right" data-aos-delay={props.duration} className={classes.root}>
+            <div className={classes.detailContainer}>
                 <h3>
                     {props.heading}
                 </h3>
                 <p>
                     {props.content}
                 </p>
-            </Box>
-            <Box style={{
+            </div>
+            <div data-aos="fade" data-aos-delay={props.duration*3} style={{
                 backgroundImage:`url(${props.img})`
             }} className={classes.imageContainer}>
-            </Box>
-        </Box>
+            </div>
+        </div>
     )
 }
 

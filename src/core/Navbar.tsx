@@ -174,22 +174,22 @@ const Navbar = () => {
         backgroundColor:!atHome ? orange[200] : scrolling.scrolling ? orange["A400"] : "transparent"}}>
       <Toolbar disableGutters >
           <Box className={classes.title}>
-            <Link to="/">
+            <Link data-aos="fade-right" to="/">
             PHONYTUNES
             </Link>
           </Box>
           <div className={classes.grow} />
           <div className={classes.hrefContainer}>
-            <Link to="/user">
+            <Link data-aos="fade-down" data-aos-delay={500} to="/user">
               Blog
             </Link>
-            <Link to="/referral">
+            <Link data-aos="fade-down" data-aos-delay={800} to="/referral">
               Referral
             </Link>
-            <Link to="/rates">
+            <Link data-aos="fade-down" data-aos-delay={1100} to="/rates">
               Rates
             </Link>
-            <a href="#Footer">
+            <a  data-aos="fade-down" data-aos-delay={1200} href="#Footer">
               Contact
             </a>
             {/* <Link to="/">

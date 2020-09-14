@@ -7,9 +7,16 @@ import SnackProvider from "./config/SnackContext"
 import UserComponent from "./user/UserComponent"
 import Rating from "./other/Rating"
 import Referral from "./other/Referral"
-
+import AOS from "aos"
+import "aos/dist/aos.css"
 
 const mainRouter =() => {
+
+    AOS.init({
+        easing:"ease-out",
+        duration:1500
+    })
+
     return(
         <>
         <Navbar/>

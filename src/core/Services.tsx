@@ -132,8 +132,8 @@ const Services = function(props:any){
     return(
         <Box className={classes.root}>
             <Box className={classes.headingContainer}>
-            <h2>Buy Gift Cards, Shop Easier</h2>
-                <p>
+            <h2 data-aos="flip-down" data-aos-delay={500}>Buy Gift Cards, Shop Easier</h2>
+                <p data-aos="flip-down" data-aos-delay={900}>
                     You can take advantage of our gift card sales service and buy gift cards
                     easily and instantly delivered to your email. Easily pay for products and
                     also when shopping on websites like Amazon, eBay, Walmart and others. Stay
@@ -142,39 +142,38 @@ const Services = function(props:any){
                 </p>
             </Box>
             <Box className={classes.doMoreContainer}>
-        <h2>
+        <h2 data-aos="fade" data-aos-delay={1000}>
           Do More With PHONYTUNES
         </h2>
-        <p>
+        <p data-aos="fade" data-aos-delay={1100}>
           Not limited to the purchase or sales of gift cards or bitcoins,
           you can easily do more with Phonystore, all on one platform.
         </p>
       </Box>
       <Box className={classes.tradeContainer}>
             {["Bitcoin","Ethereum","Amazon","Ebay","Apple"].map((m,idx) =>(
-                <ServicesCard buy={idx < 2} isTrue={idx < 2} key={idx} heading={m} />
+                <ServicesCard buy={idx < 2} duration={idx*350} isTrue={idx < 2} key={idx} heading={m} />
                 )) }
       </Box>
       <Box className={classes.contactContainer}>
           <Box className={classes.headerContactContainer}>
-              <h2>
+              <h2 data-aos="fade-right" data-aos-delay={500}>
                   Ready to Begin ?
               </h2>
-              <p>
+              <p data-aos="fade-down" data-aos-delay={1000}>
               Create an account with us within a minute to start buying
                and selling gift cards and bitcoins and withdraw your funds instantly, no delay.
               </p>
-              <Button style={{backgroundColor:"#E25855",color:"white"}}>Let's Go!</Button>
+              <Button data-aos="fade" data-aos-delay={1200} style={{backgroundColor:"#E25855",color:"white"}}>Let's Go!</Button>
           </Box>
           <Box className={classes.cardContainer} style={{width:"50%"}}>
               {["Whatsapp","Telegram","Instagram"].map((m,idx) => (
-                  <ServicesCard buy={idx < 2} isTrue={idx < 2}  key={idx}/>
+                  <ServicesCard duration={idx*350} buy={idx < 2} isTrue={idx < 2}  key={idx}/>
               ))}
           </Box>
       </Box>
     </Box>
     )
 }
-
 
 export default Services

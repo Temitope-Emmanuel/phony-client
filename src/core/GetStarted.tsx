@@ -41,7 +41,7 @@ const GetStarted:React.SFC<IProps> = (props) => {
         <Box className={classes.root}>
       <Box className={classes.bodyContainer}>
         {props.imageProps!.map((m,idx) => (
-          <GetStartedCard {...m} key={idx} />
+          <GetStartedCard duration={idx*100} {...m} key={idx} />
         ))}
       </Box>
     </Box>       

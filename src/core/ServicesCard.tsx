@@ -62,7 +62,8 @@ const useStyles = makeStyles((theme:Theme) =>
 interface IProps {
     buy:boolean;
     heading?:string;
-    isTrue?:boolean
+    isTrue?:boolean;
+    duration:number
 }
 
 const ServicesCard:React.SFC<IProps> = ({buy,...props}) => {
@@ -71,7 +72,7 @@ const ServicesCard:React.SFC<IProps> = ({buy,...props}) => {
     const classes = useStyles()
 
     return(
-        <Box className={classes.root}>
+        <Box data-aos="fade-right" data-aos-delay={props.duration} className={classes.root}>
         <Box className={classes.moreContainer}>
             <Box>
                 <h4>

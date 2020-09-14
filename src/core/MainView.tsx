@@ -71,10 +71,9 @@ const useStyles = makeStyles((theme:Theme) =>
 const MainView = () => {
     const classes = useStyles()
     const jwt = retrieveJwt()
-
     return(
         <Box className={classes.root}>
-            <h2>Do you want to&nbsp;
+            <h2 data-aos="fade" data-aos-delay={500}>Do you want to&nbsp;
                 <Typed
                 strings={[
                     "trade Gift Card ?","buy bitcoin ?","transact cryptocurrency ?"
@@ -84,18 +83,20 @@ const MainView = () => {
                 loop
                 />
             </h2>
-                <h1>Welcome to PHONYTUNES</h1>
-                <ButtonGroup data-aos="fade-in" data-delay="2000">
-                <Button style={{backgroundColor:"rgba(0,0,0,1)",color:deepOrange[900]}}>    
-                    {jwt ?
-                    <Link to={`/user/${jwt.user._id}`} >
-                        Profile
-                    </Link>:
-                    <Link to="/register">
-                        SIGN UP 
-                    </Link>}
-                </Button>
-                <Button style={{color:"rgba(0,0,0,1)",backgroundColor:deepOrange[900]}}>
+                <h1 data-aos="fade" data-aos-delay={600}>Welcome to PHONYTUNES</h1>
+                <ButtonGroup data-aos="fade" data-aos-delay={800}>
+                    <Button style={{
+                    backgroundColor:"rgba(0,0,0,1)",
+                    color:deepOrange[900]}}>    
+                        {jwt ?
+                        <Link data-aos="fade" data-aos-delay={1000} to={`/user/${jwt.user._id}`} >
+                            Profile
+                        </Link>:
+                        <Link data-aos="fade" data-aos-delay={1200} to="/register">
+                            SIGN UP 
+                        </Link>}
+                    </Button>
+                <Button data-aos="fade" data-aos-delay={1500} style={{color:"rgba(0,0,0,1)",backgroundColor:deepOrange[900]}}>
                     <a href="https://wa.me/2348096045108">
                     TRADE NOW
                     </a>

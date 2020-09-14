@@ -1,5 +1,5 @@
 import React,{ChangeEvent} from "react"
-import {Box,TextField,Grow,Divider,Button,IconButton} from "@material-ui/core"
+import {Box,TextField,Grow,Divider,ButtonGroup,Button,IconButton} from "@material-ui/core"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
@@ -7,8 +7,11 @@ import RatingCalculator from "../other/RatingCalculator"
 import {orange,deepOrange} from "@material-ui/core/colors"
 import {getCardsDetail} from "./api-card"
 import TransactionTable from "./TransactionTable"
+import ReferralTable from '../other/Referral'
 import {IUser,ICard} from "./UserComponent"
 import {retrieveJwt,IToken} from "../auth/auth-helper"
+import {DialogContext} from "../config/SnackContext"
+import Dialog from "./Dialog"
 
 const useStyles = makeStyles((theme:Theme) => (
     createStyles({
@@ -156,18 +159,52 @@ interface adapter {
     [key:string]:string | number
 }
 
+const getDateString = (date:Date) => {
+    let year = date.getFullYear()
+    let day = date.getDate().toString().length === 1 ? '0' + date.getDate() : date.getDate()
+    let month = date.getMonth().toString().length === 1 ? '0' + (date.getMonth()+1) : date.getMonth() + 1
+    let hours = date.getHours().toString().length === 1 ? '0' + date.getHours() : date.getHours()
+    let minutes = date.getMinutes().toString().length === 1 ? '0' + date.getMinutes() : date.getMinutes()
+    return `${year}-${month}-${day}T${hours}:${minutes}`
+
+}
+
+
 const Dashboard:React.SFC<IProps> = (props) => {
     const classes = useStyles()
     const [BTC,setBTC] = React.useState({
         buy:400,
         sell:425
     })
+    const context = React.useContext(DialogContext)
+    const currentDate =  new Date()
+    const defaultStartTime = getDateString(currentDate)
+    const defaultEndTime = getDateString(new Date(currentDate.setHours(currentDate.getHours()+1)))
     const [open,setOpen] = React.useState(false)
+    const [showReferralForm,setShowReferralForm] = React.useState(false)
+    const [showBlog,setShowDialogBlog] = React.useState(false)
+
+    const [date,setDate] = React.useState({
+        referralStart:defaultStartTime,
+        referralEnd:defaultEndTime
+    }) 
     const [userDetail,setUserDetail] = React.useState<IUserDetail>()
     const {admin} = props.user
-
+    
+    const submitReferral = () => {
+        context.handleOpen!({type:"success",message:"A new Referral Timeline has been created"})
+    }
     const handleToggle = () => {
         setOpen(!open)
+    }
+    const handleReferralForm = () => {
+        setShowReferralForm(!showReferralForm)
+    }
+    const handleBlog = () => {
+        setShowDialogBlog(!showBlog)
+    }
+    const handleDate = (e:ChangeEvent<HTMLInputElement>) => {
+        setDate({...date,[e.target.name]:e.target.value})
     }
     // const {admin} = (jwt as IToken).user
     React.useEffect(() => {
@@ -212,6 +249,8 @@ const Dashboard:React.SFC<IProps> = (props) => {
         setBTC({...BTC,[e.target.name]:e.target.value})
     }
     return(
+        <>
+        <Dialog open={showBlog} handleToggle={handleBlog} />
         <Box className={classes.root}>
         <Box className={classes.walletContainer}>
             <Box className={classes.acctContainer} style={{
@@ -316,12 +355,62 @@ const Dashboard:React.SFC<IProps> = (props) => {
             <Box style={{width:"45",marginRight:"3em"}}>
                 <TransactionTable admin={admin} />
             </Box>
-            <Box style={{width:"40%"}}>
-            <RatingCalculator/>
+            <Box style={{width:"40%",
+                display:"flex",
+                justifyContent:"flex-start",
+                alignItems:"center",
+                flexDirection:"column"
+            }}>
+            {admin ? <ReferralTable/> :<RatingCalculator/>}
+            <Box style={{
+                display:"flex",
+                justifyContent:"center",
+                alignItems:"center",
+                flexDirection:"column"
+            }}>
+                <ButtonGroup>
+                    <Button onClick={handleReferralForm} style={{marginTop:"1em",
+                        backgroundColor:"rgba(0,0,0,.9)",
+                        color:deepOrange["A200"]}}>
+                        {showReferralForm ? "Close Referral Form" : "Create Referral Session"}
+                    </Button>
+                    <Button  style={{marginTop:"1em",
+                        backgroundColor:"rgba(0,0,0,.9)",
+                        color:deepOrange["A200"]}} onClick={handleBlog} >
+                        Create New Blog
+                    </Button>
+                </ButtonGroup>
+                <Grow in={showReferralForm} >
+                    <Box style={{
+                        display:"flex",
+                        marginTop:"1em",
+                        width:"100%",
+                        justifyContent:"center",
+                        alignItems:"center",
+                        flexDirection:"column"
+                    }}>
+                        <TextField id="datetime-local"
+                        label="Referral Start Time" name="referralStart"
+                        type="datetime-local" onChange={handleDate}
+                        defaultValue={date.referralStart}
+                        />
+                        <TextField id="datetime-local-end"
+                        label="Referral End Time" name="referralEnd"
+                        type="datetime-local" onChange={handleDate}
+                        defaultValue={date.referralEnd}/>
+                        <Button onClick={submitReferral} style={{color:"rgba(0,0,0,.9)",
+                            backgroundColor:deepOrange["A200"],
+                            marginTop:"1.5em"
+                            }}>
+                                Submit
+                        </Button>
+                    </Box>
+                </Grow>
+            </Box>
             </Box>
         </Box>
-        
     </Box>
+    </>
     )
 }
 
