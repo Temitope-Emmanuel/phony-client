@@ -38,24 +38,47 @@ const StyledTableRow = withStyles((theme: Theme) =>
   }),
 )(TableRow);
 
-const useStyles = makeStyles({
-    root:{
-        marginTop:"5em",
-        display:"flex",
-        justifyContent:"center",
-        alignItems:"center",
-        flexDirection:"column",
-        "& > h4":{
-            margin:".5em 0"
+const useStyles = makeStyles((theme:Theme) => (
+    createStyles({
+        root:{
+            marginTop:"5em",
+            display:"flex",
+            justifyContent:"center",
+            alignItems:"center",
+            flexDirection:"column",
+            "& > h4":{
+                margin:".5em 0",
+                [theme.breakpoints.down("sm")]:{
+                    marginTop:"1.5em"
+                }
+            },
+            [theme.breakpoints.down("sm")]:{
+                width:"95%",
+                display:"flex",
+                alignItems:"center",
+                margin:"2.5%"
+            }
+        },
+        table: {
+            //   minWidth: 750,
+        //     [theme.breakpoints.down("sm")]:{
+        //         width:"90%",
+        //         display:"flex",
+        //         alignItems:"center",
+        //         flexDirection:"column",
+        //         "& > *":{
+        //             width:"100%"
+        //         }
+        //   }
+        },
+        tableContainer:{
+            width:"75%",
+            [theme.breakpoints.down("sm")]:{
+                width:"100%"
+            }
         }
-    },
-    table: {
-      minWidth: 750,
-    },
-    tableContainer:{
-        width:"75%"
-    }
-  });
+      })
+));
   
 
 const Referral = () => {
@@ -83,10 +106,9 @@ const Referral = () => {
         })
     },[])
 
-    console.log(referrals)
     return(
         <Box className={classes.root}>
-            <Typography variant="h4" >
+            <Typography variant="h4">
                 Top Referral
             </Typography>
             <TableContainer className={classes.tableContainer} component={Paper}>
@@ -113,28 +135,6 @@ const Referral = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            {/* <TableContainer className={classes.tableContainer}>
-                <Table className={classes.table}>
-                    <TableHead className={classes.tableHead}>
-                        <TableRow>
-                            <TableCell>POSITION </TableCell>
-                            <TableCell>USERNAME</TableCell>
-                            <TableCell>REFERRAL - COUNT</TableCell>
-                            <TableCell>REFERRAL - CODE</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody className={classes.bodyContainer}>
-                        {referrals && referrals.map((item,idx) => (
-                            <TableRow key={idx} >
-                                <TableCell>{idx+1}</TableCell>
-                                <TableCell>{item.username}</TableCell>
-                                <TableCell>{item.referralCount}</TableCell>
-                                <TableCell>{item.referral}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer> */}
         </Box>
     )
 }

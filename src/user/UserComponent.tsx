@@ -132,7 +132,7 @@ const UserComponent = function(props:RouteComponentProps){
           if(data){
             if(data.user){
             setUser(data.user)
-            context.handleOpen!({type:"info",message:`Welcome ${data.user.admin && "Admin"} ${data.user.username}`})
+            context.handleOpen!({type:"info",message:`Welcome ${data.user.admin ? "Admin" : ""} ${data.user.username}`})
           }else{
             context.handleOpen!({type:"error",message:data.error || "Something went wrong"})
           }

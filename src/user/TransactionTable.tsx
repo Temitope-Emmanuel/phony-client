@@ -3,7 +3,7 @@ import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
 import {Table,TableBody,TableCell,TableContainer,TableHead,TableRow} from '@material-ui/core';
 import {Accordion,AccordionDetails,AccordionSummary,AccordionActions} from "@material-ui/core"
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import {Button,ButtonGroup,Box,TablePagination} from "@material-ui/core"
+import {Button,Typography,ButtonGroup,Box,TablePagination} from "@material-ui/core"
 import Dialog from './Dialog'
 import CheckIcon from "@material-ui/icons/CheckBoxSharp"
 import {green,deepOrange,orange} from "@material-ui/core/colors"
@@ -159,7 +159,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [cards,setCard ] = React.useState<ICard[]>()
     const [detail,setDetail] = React.useState<IDetail>({
-      limit:10,
+      limit:5,
       page:0,
       total:0,
       pages:0
@@ -168,11 +168,10 @@ const SimpleTable:React.SFC<IProps> = function(props){
     
     const loadNewCardSet = (e:any,page:number) => {
       if(jwt){
-        console.log("page number",page)
         getUserCard({token:(jwt as IToken).token
           ,userId:(jwt as IToken).user._id},{
             limit:detail.limit,
-            page:page+1
+            page:detail.pages > 0 ? page+1 :  page
           }).then((data) => {
           if(data.docs){
             setCard(data.docs)
@@ -191,9 +190,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
     },[])
     const newCardSet = (idx:number,card:ICard) => {
       const cardArr = cards
-      console.log("calling the new card set with icard",card,idx)
       const newCard = (cardArr as ICard[]).splice(idx,1,card)
-      console.log("this is the new card")
       setCard(cardArr) 
     }
 
@@ -245,6 +242,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
     return (
         <Box className={classes.root}>
           <h3>Most Recent Transaction</h3>
+          {cards && cards.length > 1 ?
         <TableContainer>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
@@ -286,6 +284,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
                         </Link> */}
                     </div>
                   </AccordionDetails>
+                  {(jwt as IToken).user.admin &&
                   <AccordionActions>
                     {
                       card.status === "Pending" ?
@@ -312,12 +311,14 @@ const SimpleTable:React.SFC<IProps> = function(props){
                       </Button>
                     }
                   </AccordionActions>
+}
                 </Accordion>
               </TableRow>
               ))}
             </TableBody>
           </Table>
-            <TablePagination style={{
+            <TablePagination defaultValue={["5","10","15","20","25","30"]}
+             style={{
               width:"65%",
               display:"flex",
               margin:"1em 0",
@@ -331,11 +332,12 @@ const SimpleTable:React.SFC<IProps> = function(props){
               page={detail!.page -1} onChangePage={loadNewCardSet}
               count={detail!.total} rowsPerPage={detail!.limit} />
         </TableContainer>
+         :  <Typography variant="h5" >No Transaction available</Typography>}
           <Button onClick={handleToggle} style={{
             color:"rgba(0,0,0,.9)",
             backgroundColor:deepOrange["A200"]
             }}>Create New Transaction</Button>
-          <Dialog open={open} updateCardList={updateCardList}
+          <Dialog open={open} blog={false} updateCardList={updateCardList}
            handleToggle={handleToggle} />
         </Box>
       );

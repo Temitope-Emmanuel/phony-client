@@ -250,7 +250,7 @@ const Dashboard:React.SFC<IProps> = (props) => {
     }
     return(
         <>
-        <Dialog open={showBlog} handleToggle={handleBlog} />
+        <Dialog blog={true} open={showBlog} handleToggle={handleBlog} />
         <Box className={classes.root}>
         <Box className={classes.walletContainer}>
             <Box className={classes.acctContainer} style={{
@@ -361,7 +361,9 @@ const Dashboard:React.SFC<IProps> = (props) => {
                 alignItems:"center",
                 flexDirection:"column"
             }}>
-            {admin ? <ReferralTable/> :<RatingCalculator/>}
+            {!admin ? <RatingCalculator/>:
+            <>
+            <ReferralTable/>
             <Box style={{
                 display:"flex",
                 justifyContent:"center",
@@ -407,6 +409,7 @@ const Dashboard:React.SFC<IProps> = (props) => {
                     </Box>
                 </Grow>
             </Box>
+            </>}
             </Box>
         </Box>
     </Box>

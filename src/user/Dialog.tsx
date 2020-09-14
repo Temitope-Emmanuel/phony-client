@@ -6,6 +6,7 @@ import {Dialog,ButtonGroup,Typography,Box,DialogContent,TextField,DialogActions}
 import BurstModeIcon from '@material-ui/icons/BurstMode';
 import {DialogContext} from "../config/SnackContext"
 import {create} from "./api-card"
+import {create as newBlog} from "../blog/api-blog"
 import {retrieveJwt} from "../auth/auth-helper"
 import {useParams} from "react-router-dom"
 import {ICard} from "./UserComponent"
@@ -33,36 +34,56 @@ type MessageType = {
 interface IProps {
     open:boolean;
     handleToggle : () => void;
-    updateCardList?(arg:ICard):void
+    updateCardList?(arg:ICard):void;
+    blog:boolean;
 }
-
-
 
 interface IState {
     comment:string;
     image?:File,
-    imageLink:string
+    imageLink:string,
+    title:string
 }
 
 interface IParams {
     userId:string
 }
 
-const DialogComponent:React.SFC<IProps> = ({open,handleToggle,...props}) => {
+const DialogComponent:React.SFC<IProps> = ({blog,open,handleToggle,...props}) => {
     const context = React.useContext(DialogContext)
     const classes = useStyles()
     const params:IParams | {} = useParams()
     const[values,setValues] = React.useState<IState>({
         comment:"",
-        imageLink:"http://placeimg.com/640/480"
+        imageLink:"http://placeimg.com/640/480",
+        title:""
     })
-
     const handleSubmit = async () => {
-        const newCard = new FormData()
+        let payload;
         const jwt = retrieveJwt()
-        newCard.append("comment",values.comment)        
-        newCard.append("image",values.imageLink)
-            create(newCard,{userId:(params as IParams).userId,token:jwt!.token}).then(data => {
+        if(blog){
+            payload = {
+                title:values.title,
+                body:values.comment
+            }
+        }else{
+            payload = new FormData()
+            payload.append("comment",values.comment)        
+            payload.append("image",values.imageLink)
+        }
+        if(blog){
+            newBlog(payload,jwt!.token).then(data => {
+                console.log(data)
+                if(data.message){
+                    context.handleOpen!({type:"success",message:"New Blog has been created"})
+                }else{
+                    context.handleOpen!({type:"error",
+                    message:data.error || `Something went wrong with new Transaction Try again later`})
+                }
+            })
+        }else{
+            create(payload,{userId:(params as IParams).userId,token:jwt!.token}).then(data => {
+                console.log(data)
                 if(data.message){
                     if(props.updateCardList){
                         props.updateCardList(data.data)
@@ -73,7 +94,8 @@ const DialogComponent:React.SFC<IProps> = ({open,handleToggle,...props}) => {
                     message:data.error || `Something went wrong with new Transaction Try again later`})
                 }
             })
-            handleToggle()
+        }
+        handleToggle()
     }
 
     const handleChange = (evt:ChangeEvent<HTMLInputElement>) => {
@@ -86,12 +108,14 @@ const DialogComponent:React.SFC<IProps> = ({open,handleToggle,...props}) => {
         <Dialog onClose={handleToggle}  maxWidth={"sm"} fullWidth={true}
             aria-labelledby="simple-dialog-title"
             open={open}>
-          <DialogTitle id="simple-dialog-title">Create A New Transaction</DialogTitle>
+          <DialogTitle id="simple-dialog-title">{blog ? "Create a New Blog Post" : "Create A New Transaction"}</DialogTitle>
           <DialogContent style={{
               display:"flex",
               flexDirection:"column",
               justifyContent:"space-between"
           }}>
+              {
+                  !blog &&
               <Box style={{
                   display:'flex',
                   flexDirection:"column",
@@ -117,12 +141,24 @@ const DialogComponent:React.SFC<IProps> = ({open,handleToggle,...props}) => {
                     </Button>
                 </label>
               </Box>
+              }
+              <TextField
+                id="outlined-multiline-static"
+                label="Title of Blog Post" name="title"
+                onChange={handleChange}
+                value={values.title}
+                defaultValue="Input Any comment You would like us to know"
+                variant="standard"
+                style={{
+                    margin:"1em .5em"
+                }}
+            />
               <TextField
                 id="outlined-multiline-static"
                 label="Comment" name="comment"
-                multiline onChange={handleChange}
+                onChange={handleChange} multiline
                 value={values.comment}
-                rows={10}
+                rows={blog ? 20 : 10}
                 defaultValue="Input Any comment You would like us to know"
                 variant="outlined"
                 style={{

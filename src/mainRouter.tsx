@@ -7,6 +7,7 @@ import SnackProvider from "./config/SnackContext"
 import UserComponent from "./user/UserComponent"
 import Rating from "./other/Rating"
 import Referral from "./other/Referral"
+import BlogPage from "./other/BlogPage"
 import AOS from "aos"
 import "aos/dist/aos.css"
 
@@ -21,6 +22,7 @@ const mainRouter =() => {
         <>
         <Navbar/>
         <Switch>
+            <Route path="/blog" component={BlogPage} />
             <Route path="/rates" component={Rating} />
             <Route path="/referral" component={Referral} />
             <Route path="/user/:userId" component={UserComponent} />

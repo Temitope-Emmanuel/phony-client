@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { SyntheticEvent } from 'react'
 import {useEffect} from 'react'
 import clsx from "clsx"
 import {makeStyles } from '@material-ui/core/styles';
@@ -110,8 +110,8 @@ const Navbar = () => {
   const location = useLocation()
   const atHome = location.pathname === "/"
   const [isReady,setIsReady] = React.useState(false)
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null)
   const [scrolling,setScrolling] = React.useState({
     scrollTop:0,
     scrolling:false
@@ -131,10 +131,10 @@ const Navbar = () => {
       window.removeEventListener("scroll",onScroll)
     }
   },[])
-  const handleProfileMenuOpen = (event: { currentTarget: React.SetStateAction<null>; }) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleMobileMenuOpen = (event: { currentTarget: React.SetStateAction<null>; }) => {
+  // const handleProfileMenuOpen = (event:SyntheticEvent<React.MouseEvent>) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
+  const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
   const handleMobileMenuClose = () => {
@@ -156,12 +156,10 @@ const Navbar = () => {
     open={isMobileMenuOpen}
     onClose={handleMobileMenuClose}
 >
- {["Blog","Rates","Contact","Referral","Newsletter"].map((m,idx) => (
-   <MenuItem key={idx}>
-      <Link to="/">
-        <a style={{textDecoration:"none",color:"inherit"}}>
+ {["Blog","Rates","Referral"].map((m,idx) => (
+   <MenuItem onClick={handleMenuClose} key={idx}>
+      <Link to={`/${m.toLowerCase()}`}>
           {m}
-        </a>
       </Link>
    </MenuItem>
   ))}
@@ -180,7 +178,7 @@ const Navbar = () => {
           </Box>
           <div className={classes.grow} />
           <div className={classes.hrefContainer}>
-            <Link data-aos="fade-down" data-aos-delay={500} to="/user">
+            <Link data-aos="fade-down" data-aos-delay={500} to="/blog">
               Blog
             </Link>
             <Link data-aos="fade-down" data-aos-delay={800} to="/referral">
@@ -189,20 +187,20 @@ const Navbar = () => {
             <Link data-aos="fade-down" data-aos-delay={1100} to="/rates">
               Rates
             </Link>
-            <a  data-aos="fade-down" data-aos-delay={1200} href="#Footer">
-              Contact
-            </a>
-            {/* <Link to="/">
-              Newsletter
-            </Link> */}
+            {
+              atHome &&
+              <a  data-aos="fade-down" data-aos-delay={1200} href="#Footer">
+                Contact
+              </a>
+            }
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              color="inherit"
-            //   onClick={handleMobileMenuOpen}
+              // aria-label="show more"
+              // aria-controls={mobileMenuId}
+              // aria-haspopup="true"
+              // color="inherit"
+              onClick={handleMobileMenuOpen}
             >
               <MoreIcon />
             </IconButton>
