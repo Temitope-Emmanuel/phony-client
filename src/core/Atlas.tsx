@@ -87,32 +87,33 @@ const Atlas = () => {
     const [rates,setRates] = useState(initialState)
 
     useEffect(() => {
-      
-        // const apiCall = async function(){
-        //     const response = await fetch(`https://api.coindesk.com/v1/${"bpi"}/currentprice/NGN.json`,{
-        //         method:"GET",
-        //         headers:{
-        //             Accept:"application/json"
-        //         }
-        //     })
-        //     console.log(response)
-        //     if(response.status === 200){
-        //         setRates(response.body.data.bpi)
-        //     }
-        // }
-        // apiCall()
+        const apiCall = async function(){
+            fetch(`https://api.coindesk.com/v1/bpi/currentprice/NGN.json`,{
+                method:"GET",
+                headers:{
+                    Accept:"application/json"
+                }
+            }).then(data => data.json()).then(response => {
+              setRates(response.bpi)
+            })
+        }
+        apiCall()
     },[])
 
     return(
         <>
             <div data-aos="fade" data-aos-delay={500} style={{
                 position:"sticky",
+                display:"flex",
+                flexDirection:"row",
+                justifyContent:"center",
+                alignItems:"center",
                 top:0
             }} className={classes.ratesContainer}>
                 {rates.NGN &&
                 <>
-                    <p data-aos="fade" data-aos-delay={1000}>{rates.NGN.code} - {rates.NGN.rate}</p>
-                    <p data-aos="fade" data-aos-delay={1100}>{rates.USD.code} - {rates.USD.rate}</p>
+                    <p data-aos="fade" data-aos-delay={1000}>1 BTC - {rates.NGN.code}{rates.NGN.rate}</p>
+                    <p data-aos="fade" data-aos-delay={1100}>1 BTC - {rates.USD.code}{rates.USD.rate}</p>
                 </>
             }
             </div>

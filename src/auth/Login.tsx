@@ -31,13 +31,21 @@ const useStyles = makeStyles((theme:Theme) => (
                 display:"flex",
                 justifyContent:"center",
                 alignItems:"center",
-                flexDirection:"column"
+                flexDirection:"column",
+                [theme.breakpoints.down("md")]:{
+                    width:"100%",
+                    backgroundImage:`url(${mainBg})`,
+                    filter:"grayscale(.9)"
+                }
             },
             "& > div:nth-child(2)":{
                 backgroundImage:`url(${mainBg})`,
                 width:"60vw",
                 height:"100%",
-                filter:"grayscale(.5)"
+                filter:"grayscale(.5)",
+                [theme.breakpoints.down("md")]:{
+                    display:"none"
+                }
             },
             "& a":{
                 textDecoration:"none",
