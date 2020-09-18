@@ -21,6 +21,11 @@ const useStyles = makeStyles(({breakpoints,...theme}:Theme) =>
                     boxShadow:"0px 10px 43px 9px rgba(0,0,0,.7)",
                     borderRadius:"1em"
                 }     
+            },
+            [breakpoints.down("md")]:{
+                height:"10%",
+                width:"23%",
+                margin:"auto"
             }
           },
           detailContainer:{

@@ -20,6 +20,12 @@ const useStyles = makeStyles((theme:Theme) =>
                 transform:"translateY(-15%)",
                 height:"115%",
               }
+            },
+            [theme.breakpoints.down("sm")]:{
+              borderRadius:"5em 0 5em 0",
+              height:"10em",
+              width:"18em",
+              margin:"0 auto"
             }
           },
           moreContainer:{

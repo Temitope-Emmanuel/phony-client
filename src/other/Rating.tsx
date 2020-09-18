@@ -14,6 +14,10 @@ const useStyles = makeStyles((theme:Theme) => (
             height:"100vh",
             "& > div":{
                 backgroundColor:"white !important"
+            },
+            [theme.breakpoints.down("sm")]:{
+                margin:"0 3em",
+                width:"auto"
             }
         }
     })

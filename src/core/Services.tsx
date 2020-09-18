@@ -117,9 +117,13 @@ const useStyles = makeStyles((theme:Theme) =>(
         cardContainer:{
             margin:theme.spacing(2,0),
             display:"grid",
+            width:"50%",
             gridRowGap:"1em",
             [theme.breakpoints.down("sm")]:{
                 width:"100% !important",
+                "& > div":{
+                    width:"15em"
+                }
             }
         }
     })
@@ -166,7 +170,7 @@ const Services = function(props:any){
               </p>
               <Button data-aos="fade" data-aos-delay={1200} style={{backgroundColor:"#E25855",color:"white"}}>Let's Go!</Button>
           </Box>
-          <Box className={classes.cardContainer} style={{width:"50%"}}>
+          <Box className={classes.cardContainer}>
               {["Whatsapp","Telegram","Instagram"].map((m,idx) => (
                   <ServicesCard duration={idx*350} buy={idx < 2} isTrue={idx < 2}  key={idx}/>
               ))}

@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme:Theme) => (
               backgroundColor:orange[200] 
             },
             [theme.breakpoints.down("md")]:{
-              width:"100vw",
               padding:"1em .5em"
           }
         },
@@ -59,8 +58,8 @@ const useStyles = makeStyles((theme:Theme) => (
           [theme.breakpoints.down("md")]:{
             minWidth: 350,
           },
-          [theme.breakpoints.down("md")]:{
-            minWidth: 150,
+          [theme.breakpoints.down("sm")]:{
+            minWidth: 100,
           }
         },
         tableContainer:{

@@ -69,6 +69,9 @@ const useStyles = makeStyles((theme:Theme) => (
             },
             "& span":{
                 fontSize:"1.25em"
+            },
+            [theme.breakpoints.down("sm")]:{
+                padding:"10px 15px"
             }
         },
         amountContainer:{
@@ -123,7 +126,30 @@ const useStyles = makeStyles((theme:Theme) => (
                 }
             },
             "& > div:nth-child(2)":{
-                width:"60%"
+                // width:"60%",
+                display:"flex",
+                justifyContent:"center",
+                alignItems:"center",
+                flexDirection:"column",
+                width:"50%"
+            },
+            [theme.breakpoints.down("sm")]:{
+                flexDirection:"column-reverse",
+                "& > div":{
+                    width:"100% !important"
+                }
+            }
+        },
+        buttonHolder:{
+            // [theme.breakpoints.down("sm")]:{
+            //     display:"flex",
+            //     flexDirection:"row"
+            // }
+        },
+        priceContainer:{
+            [theme.breakpoints.down("sm")]:{
+                display:"flex",
+                flexDirection:"row"
             }
         },
         transactionContainer:{
@@ -134,11 +160,12 @@ const useStyles = makeStyles((theme:Theme) => (
             flexDirection:"row",
             "& > div:first-child":{
                 width:"45",
-                marginRight:"3em",
+                [theme.breakpoints.up("md")]:{
+                    marginRight:"3em",
+                },
                 [theme.breakpoints.down("md")]:{
-                    width:"100vw",
+                    width:"95vw",
                     padding:"1em .5em",
-                    margintRight:"0 0"
                 }
             },
             "& > div:nth-child(2)":{
@@ -148,7 +175,7 @@ const useStyles = makeStyles((theme:Theme) => (
                 alignItems:"center",
                 flexDirection:"column",
                 [theme.breakpoints.down("md")]:{
-                    width:"100vw",
+                    width:"92vw",
                     padding:"1em .5em"
                 }
             },
@@ -222,7 +249,6 @@ const Dashboard:React.SFC<IProps> = (props) => {
     const handleDate = (e:ChangeEvent<HTMLInputElement>) => {
         setDate({...date,[e.target.name]:e.target.value})
     }
-    // const {admin} = (jwt as IToken).user
     React.useEffect(() => {
         let totalTransaction:number = 0;
         let pendingTransaction:number = 0;
@@ -317,7 +343,7 @@ const Dashboard:React.SFC<IProps> = (props) => {
                     <h4>
                         BTC RATES TODAY
                     </h4>
-                    <Box>
+                    <Box className={classes.priceContainer}>
                         <h6>BUY AT: {BTC.buy}/$</h6>
                         <h6>SELL AT: {BTC.sell}/$</h6>
                     </Box>
@@ -344,7 +370,7 @@ const Dashboard:React.SFC<IProps> = (props) => {
                             />
                         </>
                     </Grow>}
-                    <Box>
+                    <Box className={classes.buttonHolder}>
                         {admin ? 
                             <Button onClick={handleToggle} 
                             style={{backgroundColor:"rgba(0,0,0,.9)",

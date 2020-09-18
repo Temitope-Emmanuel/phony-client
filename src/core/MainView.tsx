@@ -35,7 +35,8 @@ const useStyles = makeStyles((theme:Theme) =>
                 fontWeight:"400",
                 textTransform:"uppercase",
                 [theme.breakpoints.down("sm")]:{
-                    fontSize:"1.4em"
+                    fontSize:"1.3em",
+                    fontWeight:"700"
                 }
             },
             "& h2":{
@@ -44,7 +45,9 @@ const useStyles = makeStyles((theme:Theme) =>
                 WebkitTextFillColor:"transparent",      
                 backgroundImage:`linear-gradient(to right,black,${theme.palette.primary.dark})`,
                 [theme.breakpoints.down("sm")]:{
-                    fontSize:"1.3em"
+                    fontSize:"1.1em",
+                    position:"absolute",
+                    top:"13em"
                 }
             },
             "& button":{

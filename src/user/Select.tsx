@@ -61,6 +61,7 @@ const SelectComponent:React.SFC<IProps> = function({heading,category,...props}){
                 <option value={30}>NordStrom</option>
                 <option value={30}>Ebay</option>
                 <option value={30}>American Express</option>
+                <option value={5}>other</option>
                 </>
                 :
                 <>
@@ -69,6 +70,7 @@ const SelectComponent:React.SFC<IProps> = function({heading,category,...props}){
                 <option value={1}>$200</option>
                 <option value={1}>$300</option>
                 <option value={1}>$500</option>
+                <option value={1}>other</option>
                 </>
                 }
                 </Select>
