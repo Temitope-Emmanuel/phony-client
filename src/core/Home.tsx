@@ -37,6 +37,19 @@ const useStyles = makeStyles((theme:Theme) =>
 
 const Home = () => {
     const classes = useStyles()
+
+    React.useEffect(() => {
+      const callServer = () => {
+        fetch(`${process.env.SERVER_URL}/api/getreadt`,{
+          method:"GET",
+          headers:{
+            "Accept":"application/json"
+          }
+        }).then(data => data.json())
+        .then(data => console.log(data))
+        .catch(err => console.log(err)) 
+      }
+    },)
     return(
         <Box className={classes.root}>
           <Navbar/>

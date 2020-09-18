@@ -158,7 +158,10 @@ const Navbar = () => {
 >
  {["Blog","Rates","Referral"].map((m,idx) => (
    <MenuItem onClick={handleMenuClose} key={idx}>
-      <Link to={`/${m.toLowerCase()}`}>
+      <Link style={{
+          textDecoration:"none",
+          color:"black"
+        }}  to={`/${m.toLowerCase()}`}>
           {m}
       </Link>
    </MenuItem>

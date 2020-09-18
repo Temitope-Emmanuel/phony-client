@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme:Theme) => (
                 justifyContent:"center",
                 alignItems:"center",
                 flexDirection:"column",
-                [theme.breakpoints.down("md")]:{
+                [theme.breakpoints.down("sm")]:{
                     width:"100%",
                     backgroundImage:`url(${mainBg})`,
                     filter:"grayscale(.9)"
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme:Theme) => (
                 width:"60vw",
                 height:"100%",
                 filter:"grayscale(.5)",
-                [theme.breakpoints.down("md")]:{
+                [theme.breakpoints.down("sm")]:{
                     display:"none"
                 }
             },

@@ -60,21 +60,22 @@ const useStyles = makeStyles((theme:Theme) => (
             }
         },
         table: {
-            //   minWidth: 750,
-        //     [theme.breakpoints.down("sm")]:{
-        //         width:"90%",
-        //         display:"flex",
-        //         alignItems:"center",
-        //         flexDirection:"column",
-        //         "& > *":{
-        //             width:"100%"
-        //         }
-        //   }
+                minWidth: 750,
+            [theme.breakpoints.down("sm")]:{
+                minWidth:200,
+                display:"flex",
+                alignItems:"center",
+                flexDirection:"column",
+                "& > *":{
+                    width:"100%"
+                }
+          }
         },
         tableContainer:{
             width:"75%",
             [theme.breakpoints.down("sm")]:{
-                width:"100%"
+                width:"100%",
+                minWidth:200
             }
         }
       })

@@ -132,14 +132,30 @@ const useStyles = makeStyles((theme:Theme) => (
             display:"flex",
             justifyContent:"space-evenly",
             flexDirection:"row",
+            "& > div:first-child":{
+                width:"45",
+                marginRight:"3em",
+                [theme.breakpoints.down("md")]:{
+                    width:"100vw",
+                    padding:"1em .5em",
+                    margintRight:"0 0"
+                }
+            },
+            "& > div:nth-child(2)":{
+                width:"40%",
+                display:"flex",
+                justifyContent:"flex-start",
+                alignItems:"center",
+                flexDirection:"column",
+                [theme.breakpoints.down("md")]:{
+                    width:"100vw",
+                    padding:"1em .5em"
+                }
+            },
             [theme.breakpoints.down("md")]:{
                 flexDirection:"column",
                 alignItems:"center",
-                justifyContent:"space-between",
-                "& > div":{
-                    width:"98% !important",
-                    margin:" 1.5em 1%"
-                }
+                justifyContent:"space-between"
             }
         }
     })
@@ -352,15 +368,10 @@ const Dashboard:React.SFC<IProps> = (props) => {
             </Box>
         </Box>
         <Box className={classes.transactionContainer}>
-            <Box style={{width:"45",marginRight:"3em"}}>
+            <Box>
                 <TransactionTable admin={admin} />
             </Box>
-            <Box style={{width:"40%",
-                display:"flex",
-                justifyContent:"flex-start",
-                alignItems:"center",
-                flexDirection:"column"
-            }}>
+            <Box>
             {!admin ? <RatingCalculator/>:
             <>
             <ReferralTable/>

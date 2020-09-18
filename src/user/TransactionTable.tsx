@@ -34,7 +34,11 @@ const useStyles = makeStyles((theme:Theme) => (
             },
             "& > div":{
               backgroundColor:orange[200] 
-            }
+            },
+            [theme.breakpoints.down("md")]:{
+              width:"100vw",
+              padding:"1em .5em"
+          }
         },
         details: {
           display:"flex",
@@ -51,7 +55,13 @@ const useStyles = makeStyles((theme:Theme) => (
         table: {
           minWidth: 750,
           overflow:"hidden",
-          borderRadius:".2em .2em 2em 2em"
+          borderRadius:".2em .2em 2em 2em",
+          [theme.breakpoints.down("md")]:{
+            minWidth: 350,
+          },
+          [theme.breakpoints.down("md")]:{
+            minWidth: 150,
+          }
         },
         tableContainer:{
           borderLeft:"rgba(0,0,0,.5) solid 3px",
