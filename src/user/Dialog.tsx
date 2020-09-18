@@ -127,7 +127,8 @@ const DialogComponent:React.SFC<IProps> = ({blog,open,handleToggle,...props}) =>
                   }} variant="subtitle2" >
                       {values.image ? values.image?.name : "Upload Image"}
                   </Typography>
-                <input name="image" onChange={handleChange} type="file" accept="image/**" style={{display:"none"}}
+                <input name="image" onChange={handleChange}
+                 type="file" accept="image/**" style={{display:"none"}}
                 id="Image-input"/>
                 <label htmlFor="Image-input">
                     <Button component="span">
@@ -135,30 +136,33 @@ const DialogComponent:React.SFC<IProps> = ({blog,open,handleToggle,...props}) =>
                             backgroundColor:deepOrange["A700"],
                             color:"black",
                             borderRadius:"50%",
-                            fontSize:"3em",
+                            fontSize:"2em",
                             padding:".3em"
                         }} />
                     </Button>
                 </label>
               </Box>
               }
-              <TextField
-                id="outlined-multiline-static"
-                label="Title of Blog Post" name="title"
-                onChange={handleChange}
-                value={values.title}
-                defaultValue="Input Any comment You would like us to know"
-                variant="standard"
-                style={{
-                    margin:"1em .5em"
-                }}
-            />
+              {
+                  blog &&
+                <TextField
+                    id="outlined-multiline-static"
+                    label="Title of Blog Post" name="title"
+                    onChange={handleChange}
+                    value={values.title}
+                    defaultValue="Input Any comment You would like us to know"
+                    variant="standard"
+                    style={{
+                        margin:"1em .5em"
+                    }}
+                />
+              }
               <TextField
                 id="outlined-multiline-static"
                 label="Comment" name="comment"
                 onChange={handleChange} multiline
                 value={values.comment}
-                rows={blog ? 20 : 10}
+                rows={10}
                 defaultValue="Input Any comment You would like us to know"
                 variant="outlined"
                 style={{

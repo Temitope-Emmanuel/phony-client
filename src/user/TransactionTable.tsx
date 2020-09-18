@@ -11,6 +11,7 @@ import {ICard} from "./UserComponent"
 import {getUserCard,updateCardStatus} from "./api-card"
 import {retrieveJwt,IToken} from "../auth/auth-helper"
 import {DialogContext} from "../config/SnackContext"
+import CommentList from "../comment/CommentList"
 
 
 const useStyles = makeStyles((theme:Theme) => (
@@ -54,12 +55,17 @@ const useStyles = makeStyles((theme:Theme) => (
         table: {
           minWidth: 750,
           overflow:"hidden",
-          borderRadius:".2em .2em 2em 2em",
           [theme.breakpoints.down("md")]:{
             minWidth: 350,
           },
           [theme.breakpoints.down("sm")]:{
-            minWidth: 100,
+            minWidth:200,
+            display:"flex",
+            alignItems:"center",
+            flexDirection:"column",
+            "& > *":{
+                width:"100%"
+            }
           }
         },
         tableContainer:{
@@ -143,6 +149,19 @@ const useStyles = makeStyles((theme:Theme) => (
           "& > div":{
             justifyContent:"space-between"
           }
+        },
+        paginationContainer:{
+          display:"flex",
+          margin:"1em 0",
+          marginLeft:"50%",
+          transform:"translateX(-50%)",
+          justifyContent:"center",
+          overflow:"hidden",
+          borderRadius:"5em",
+          backgroundColor:deepOrange["A200"],
+          [theme.breakpoints.down("sm")]:{
+            width:"100%"
+          }
         }
     })
 ))
@@ -162,7 +181,7 @@ interface IProps {
 const SimpleTable:React.SFC<IProps> = function(props){
     const classes = useStyles()
     const context = React.useContext(DialogContext)
-    const [expanded, setExpanded] = React.useState<string | boolean>(false);
+    const [expanded, setExpanded] = React.useState<string | boolean>("5f6513b73d1a9e1cb4810eb0");
     const [open,setOpen] = React.useState(false)
     // const [page, setPage] = React.useState(2);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -180,7 +199,8 @@ const SimpleTable:React.SFC<IProps> = function(props){
         getUserCard({token:(jwt as IToken).token
           ,userId:(jwt as IToken).user._id},{
             limit:detail.limit,
-            page:detail.pages > 0 ? page+1 :  page
+            // page:detail.pages > 0 ? page+1 :  page
+            page:0
           }).then((data) => {
           if(data.docs){
             setCard(data.docs)
@@ -189,6 +209,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
         })
       }
     }
+
     React.useEffect(() => {
       const abortController = new AbortController()
       const {signal} = abortController
@@ -247,18 +268,24 @@ const SimpleTable:React.SFC<IProps> = function(props){
       newCard?.unshift(card)
       setCard(newCard)
     }
-
+    const commentList = new Array(10).fill({
+      body:"Some bosdy sha",
+      _id:"sakasnksas",
+      author:"temitope",
+      createdAt:new Date()
+    })
+    console.log(commentList)
     return (
         <Box className={classes.root}>
           <h3>Most Recent Transaction</h3>
-          {cards && cards.length > 1 ?
+          {cards && cards.length > 0 ?
         <TableContainer>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow className={classes.textHeader}>
                 <TableCell align="center"><span>Date</span></TableCell>
                 <TableCell align="center"><span>Comment</span></TableCell>
-                <TableCell style={{marginRight:"3em"}}><span>Status</span></TableCell>
+                <TableCell ><span>Status</span></TableCell>
               </TableRow>
             </TableHead>
             <TableBody className={classes.tableContainer}>
@@ -274,7 +301,8 @@ const SimpleTable:React.SFC<IProps> = function(props){
                     <TableCell align="right"><span>{`${card.comment.substring(0,40)}...`}</span></TableCell>
                     <TableCell className={classes.statusContainer}
                     align="right"><span>{card.status === "Success" ? "Success"
-                      : card.status === "Failed" ? "Failed" : "Pending"}</span><CheckIcon/>
+                      : card.status === "Failed" ? "Failed" : "Pending"}</span>
+                      {/* <CheckIcon/> */}
                     </TableCell>
                   </AccordionSummary>
                   <AccordionDetails className={classes.details}>
@@ -283,15 +311,12 @@ const SimpleTable:React.SFC<IProps> = function(props){
                           backgroundImage:`url(${card.image})`
                       }} />
                     {/* <div className={clsx(classes.column, classes.helper)}> */}
-                    <div className={classes.helper}>
-                      <p className={classes.detailParagraph} >
-                          {card.comment}
-                      </p>
-                      {/* <Link to={`/campground/${card._id}`} 
-                          className={classes.link}>
-                          Learn more
-                        </Link> */}
-                    </div>
+                    <Box className={classes.helper}>
+                      <Typography>
+                        Add Comment to Transaction
+                      </Typography>
+                      <CommentList comments={commentList} />
+                    </Box>
                   </AccordionDetails>
                   {(jwt as IToken).user.admin &&
                   <AccordionActions>
@@ -327,17 +352,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
             </TableBody>
           </Table>
             <TablePagination defaultValue={["5","10","15","20","25","30"]}
-             style={{
-              width:"65%",
-              display:"flex",
-              margin:"1em 0",
-              marginLeft:"50%",
-              transform:"translateX(-50%)",
-              justifyContent:"center",
-              overflow:"hidden",
-              borderRadius:"5em",
-              backgroundColor:deepOrange["A200"]
-            }} onChangeRowsPerPage={handleChangeRowsPerPage}
+             className={classes.paginationContainer} onChangeRowsPerPage={handleChangeRowsPerPage}
               page={detail!.page -1} onChangePage={loadNewCardSet}
               count={detail!.total} rowsPerPage={detail!.limit} />
         </TableContainer>

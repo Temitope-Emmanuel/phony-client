@@ -1,0 +1,40 @@
+.bubble {
+    box-sizing: border-box;
+    float: left;
+    width: auto;
+    max-width: 90%;
+    position: relative;
+    clear: both;
+    background-image: linear-gradient(to left,beige,white);
+    border: solid 1px rgba(0,0,0,0.5);
+    -webkit-border-radius: 1.5em;
+    -moz-border-radius: 1.5em;
+    border-radius: 1.5em; 
+    margin-bottom: 1.5em;
+    padding: .5em;
+    color: #000;
+    word-wrap: break-word;
+  }
+  
+  .bubble:before, .bubble:after {
+    border-radius: 1.5em / 1.5em;
+    content: '';
+    display: block;
+    position: absolute;
+  }
+  
+  .bubble:before {
+    border: 10px solid transparent;
+    border-bottom-color: black;
+    bottom: 0px;
+    left: -7px;
+    z-index: -2;
+  }
+  
+  .bubble:after {
+    border: 10px solid transparent;
+    border-bottom-color:beige; /* arrow color */
+    bottom: 4px;
+    left: -5px;
+  }
+  
