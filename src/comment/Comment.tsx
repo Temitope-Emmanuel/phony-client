@@ -90,7 +90,7 @@ const Comment:React.SFC<IProps> = ({comment:{body,createdAt,_id,author},deleteCo
                 </Box>
                 <Box component="span" 
                 className={classes.dateContainer}>
-                  {createdAt.toLocaleTimeString()}  
+                  {(new Date(createdAt)).toLocaleTimeString()}  
                 </Box>
             </Box>
             {/* {props.creator === user.username &&  */}

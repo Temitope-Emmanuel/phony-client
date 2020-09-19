@@ -18,6 +18,7 @@ import {DialogContext as SnackbarContext} from "../config/SnackContext"
 import Footer from "../other/Footer"
 import {retrieveJwt} from "../auth/auth-helper"
 import {orange} from "@material-ui/core/colors"
+import {IComment} from "../comment/Comment"
 
 interface ITabProps {
     children:React.ReactNode;
@@ -93,7 +94,7 @@ export interface ICard {
   _id:string;
   status:string;
   createdAt:Date;
-  comment:string;
+  comments:IComment[];
 
 }
 

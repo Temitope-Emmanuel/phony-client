@@ -175,12 +175,12 @@ const CardList:React.SFC<IProps> = function({cards,...props}) {
             }} />
           <div className={clsx(classes.column, classes.helper)}>
             <p className={classes.detailParagraph} >
-                {card.comment}
+                {card.comments}
             </p>
-            <Link to={`/campground/${card._id}`} 
+            {/* <Link to={`/campground/${card._id}`} 
                 className={classes.link}>
                 Learn more
-              </Link>
+              </Link> */}
           </div>
         </AccordionDetails>
         <Divider style={{backgroundColor:"rgba(0,0,0,.4)",margin:"0 1.4em"}} />

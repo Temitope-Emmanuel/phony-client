@@ -2,7 +2,7 @@ import React from "react"
 import Snackbar from "../other/Snackbar"
 
 export interface IPayload {
-    type:string;
+    type:"error" | "info" | "success" | "warning" | "";
     message:string
 }
 

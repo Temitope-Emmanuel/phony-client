@@ -268,13 +268,12 @@ const SimpleTable:React.SFC<IProps> = function(props){
       newCard?.unshift(card)
       setCard(newCard)
     }
-    const commentList = new Array(10).fill({
+    const commentList = new Array(2).fill({
       body:"Some bosdy sha",
       _id:"sakasnksas",
       author:"temitope",
       createdAt:new Date()
     })
-    console.log(commentList)
     return (
         <Box className={classes.root}>
           <h3>Most Recent Transaction</h3>
@@ -298,7 +297,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
                   <AccordionSummary className={classes.accordionSummary} id={card._id}
                    expandIcon={<ExpandMoreIcon />} aria-controls={card._id}>
                     <TableCell align="right"><span>{new Date(card.createdAt).toLocaleDateString()}</span></TableCell>
-                    <TableCell align="right"><span>{`${card.comment.substring(0,40)}...`}</span></TableCell>
+                    {/* <TableCell align="right"><span>{`${card.comment.substring(0,40)}...`}</span></TableCell> */}
                     <TableCell className={classes.statusContainer}
                     align="right"><span>{card.status === "Success" ? "Success"
                       : card.status === "Failed" ? "Failed" : "Pending"}</span>
@@ -312,10 +311,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
                       }} />
                     {/* <div className={clsx(classes.column, classes.helper)}> */}
                     <Box className={classes.helper}>
-                      <Typography>
-                        Add Comment to Transaction
-                      </Typography>
-                      <CommentList comments={commentList} />
+                      <CommentList transactionId={card._id} comments={card.comments} />
                     </Box>
                   </AccordionDetails>
                   {(jwt as IToken).user.admin &&

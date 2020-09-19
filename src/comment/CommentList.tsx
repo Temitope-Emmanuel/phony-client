@@ -1,14 +1,16 @@
-import React,{ChangeEvent,KeyboardEvent} from "react"
+import React from "react"
 import {makeStyles,Theme,createStyles} from "@material-ui/core/styles"
-import {Box,Slide} from "@material-ui/core"
+import {Box,Slide,Collapse} from "@material-ui/core"
 import Comment,{IComment} from "./Comment"
 import {Button,IconButton,Input,FormControl,InputAdornment} from "@material-ui/core"
 import UseInputState from "../config/useInputState"
 import QuestionAnswerRoundedIcon from '@material-ui/icons/QuestionAnswerRounded';
 import SendRoundedIcon from '@material-ui/icons/SendRounded';
-import {withRouter} from "react-router-dom"
+import {retrieveJwt,IToken} from "../auth/auth-helper"
 import CancelScheduleSendIcon from '@material-ui/icons/CancelScheduleSend';
-
+import {createComment,deleteComment} from "./api-comment"
+import {DialogContext} from "../config/SnackContext"
+import { deepOrange} from "@material-ui/core/colors"
 
 
 const useStyles = makeStyles((theme:Theme) => (
@@ -57,26 +59,60 @@ const useStyles = makeStyles((theme:Theme) => (
 ))
 
 interface IProps {
-    comments:IComment[]
+    comments:IComment[];
+    transactionId:string;
 }
 
 const CommentList:React.SFC<IProps> = ({comments,...props}) => {
     const classes = useStyles()
     const [isVisible,setIsVisible] = React.useState(false)
     const [text,handleText,resetText] = UseInputState("")
+    const [jwt,setJwt] = React.useState<IToken>()
+    const [showComment,setShowComment] = React.useState(false)
+    const context = React.useContext(DialogContext)
     const handleVisible = () => {
         setIsVisible(!isVisible)
     }
 
-    const handleSubmit = (e:any) => {
-        e.preventDefault()
-        handleVisible()
-        resetText()
+    React.useEffect(() => {
+        const auth = retrieveJwt()
+        if(auth !== null){
+            setJwt(auth)
+        }
+    },[])
+    const handleToggle = () => {
+        setIsVisible(!isVisible)
     }
-    const deleteComment = (arg:string) => {}
+    const changeComment = () => {
+        setShowComment(!showComment)
+    }
 
-
+    const handleSubmit = (e:any) => {
+        createComment({transactionId:props.transactionId,token:jwt!.token},{body:text})
+        .then(data => {
+            handleToggle()
+            if(data.message){
+                context.handleOpen!({type:"success",message:"New Comment created Successfully"})
+            }
+        })
+        .catch(err => {context.handleOpen!({type:"error",message:err.error || err.message || "Unable to save Comment"})})
+    }
+    const deleteAComment = (arg:string) => {
+        deleteComment({token:jwt!.token,commentId:arg}).then(data => {
+            if(data.message){
+                context.handleOpen!({type:"success",message:"Comment successfully deleted"})
+            }
+        })
+        .catch(err => {context.handleOpen!({type:"error",message:err.error || err.message || "Unable to save Comment"})})
+    }
+    
     return(
+        <>
+            <Button onClick={changeComment} variant="outlined" style={{
+                color:deepOrange["A200"],
+                marginTop:"3px"
+            }} >{showComment ? "Hide Comments" : "Show Comments"}</Button>
+        <Collapse in={showComment}>
         <Box className={classes.root}>
             <Box className={classes.SlideContainer}>
                 <Slide direction="right" 
@@ -84,7 +120,7 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
                  timeout={800} in={isVisible}>
                 <FormControl  style={{margin:".4em"}} className={classes.inputContainer}>
                      <Input name="comment"
-                     required={true}
+                    required={true}
                       onChange={handleText}
                       onKeyPress={(e) => e.which === 13 && handleSubmit(e)}
                       value={text}
@@ -100,7 +136,7 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
                       }
                       endAdornment={
                           <InputAdornment variant="filled" position="end">
-                              <Button style={{borderRadius:"5em"}} onClick={handleSubmit}>
+                              <Button style={{borderRadius:"5em"}} onClick={handleToggle}>
                                 <SendRoundedIcon style={{color:"rgba(255,255,255,0.8)"}} />
                               </Button>
                           </InputAdornment>
@@ -121,11 +157,13 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
             <Box className={classes.commentContainer}>
             {comments.map(m => (
                 <Box key={m._id}>
-                    <Comment comment={m} deleteComment={deleteComment} />
+                    <Comment comment={m} deleteComment={deleteAComment} />
                 </Box>
             ))}
             </Box>
         </Box>
+        </Collapse>
+        </>
     )
 }
 
