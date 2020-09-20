@@ -2,7 +2,7 @@ import React from "react"
 import {makeStyles,Theme,createStyles} from "@material-ui/core/styles"
 import {Box} from "@material-ui/core"
 import "./Bubble.css"
-import {Avatar,Collapse,IconButton} from "@material-ui/core"
+import {Avatar,Collapse,IconButton,Typography} from "@material-ui/core"
 import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
 import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 import {red} from "@material-ui/core/colors"
@@ -26,8 +26,8 @@ const useStyles = makeStyles((theme:Theme) => (
             }
         },
         large: {
-            width: theme.spacing(6),
-            height: theme.spacing(6),
+            width: theme.spacing(4),
+            height: theme.spacing(4),
           },
           commentContainer:{
               width:"100%",
@@ -37,12 +37,10 @@ const useStyles = makeStyles((theme:Theme) => (
           },
         dateContainer:{
             display:"block",
-            float:"right",
             fontSize:".9em",
             opacity:".6",
             alignSelf:"flex-end",
-            margin:theme.spacing(0,1.4),
-            transform:"translateY(60%)",
+            margin:theme.spacing(0,1)
         },
         actionContainer:{
             display:"flex",
@@ -64,8 +62,6 @@ interface IProps {
     deleteComment(arg:string):void
 }
 
-
-
 const Comment:React.SFC<IProps> = ({comment:{body,createdAt,_id,author},deleteComment,...props}) => {
     const classes =  useStyles()
     const [deleteSlide,setDeleteSlide] = React.useState(false)
@@ -84,17 +80,18 @@ const Comment:React.SFC<IProps> = ({comment:{body,createdAt,_id,author},deleteCo
             />
 
             <Box className={classes.commentContainer}>
-            <Box onClick={handleSlide} style={{marginLeft:".7em",zIndex:3}} className="bubble">
-                <Box style={{fontSize:"1em"}} component="span">
-                 {body}
+                <Box onClick={handleSlide} style={{marginLeft:".4em",zIndex:3}}
+                 className="bubble">
+                    <Typography style={{fontSize:".8em"}} component="span" variant="body1">
+                        {body}
+                    </Typography>
+                    <Typography component="span" variant="subtitle2" 
+                        className={classes.dateContainer}>
+                    {(new Date(createdAt)).toLocaleTimeString()}  
+                    </Typography>
                 </Box>
-                <Box component="span" 
-                className={classes.dateContainer}>
-                  {(new Date(createdAt)).toLocaleTimeString()}  
-                </Box>
-            </Box>
             {/* {props.creator === user.username &&  */}
-            <Collapse
+            {/* <Collapse
             timeout={600}
             style={{transform:"rotate(90deg)"}}
             collapsedHeight={40}
@@ -109,7 +106,7 @@ const Comment:React.SFC<IProps> = ({comment:{body,createdAt,_id,author},deleteCo
                             style={{backgroundColor:red[300],color:red[800],transform:!deleteSlide ? "rotate(90deg)": "rotate(630deg)"}} />
                         </IconButton>
                     </Box>
-                </Collapse>
+                </Collapse> */}
             </Box>
         </Box>
     )

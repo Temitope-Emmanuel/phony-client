@@ -2,7 +2,7 @@ import React from "react"
 import {makeStyles,Theme,createStyles} from "@material-ui/core/styles"
 import {Box,Slide,Collapse} from "@material-ui/core"
 import Comment,{IComment} from "./Comment"
-import {Button,IconButton,Input,FormControl,InputAdornment} from "@material-ui/core"
+import {Button,Typography,IconButton,Input,FormControl,InputAdornment} from "@material-ui/core"
 import UseInputState from "../config/useInputState"
 import QuestionAnswerRoundedIcon from '@material-ui/icons/QuestionAnswerRounded';
 import SendRoundedIcon from '@material-ui/icons/SendRounded';
@@ -70,6 +70,8 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
     const [jwt,setJwt] = React.useState<IToken>()
     const [showComment,setShowComment] = React.useState(false)
     const context = React.useContext(DialogContext)
+    const [submit,setSubmitting] = React.useState(false)
+    const [useComments,setUseComments] = React.useState<IComment[] | []>()
     const handleVisible = () => {
         setIsVisible(!isVisible)
     }
@@ -79,19 +81,30 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
         if(auth !== null){
             setJwt(auth)
         }
-    },[])
+        setUseComments(comments)
+    },[comments])
+    const addComment = (arg:IComment) => {
+        setUseComments([...(useComments as IComment[]),arg])
+    }
     const handleToggle = () => {
         setIsVisible(!isVisible)
+    }
+    const changeSubmit = () => {
+        setSubmitting(!submit)
     }
     const changeComment = () => {
         setShowComment(!showComment)
     }
 
     const handleSubmit = (e:any) => {
+        changeSubmit()
         createComment({transactionId:props.transactionId,token:jwt!.token},{body:text})
         .then(data => {
             handleToggle()
+            changeSubmit()
             if(data.message){
+                addComment(data.data)
+                resetText()
                 context.handleOpen!({type:"success",message:"New Comment created Successfully"})
             }
         })
@@ -105,22 +118,25 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
         })
         .catch(err => {context.handleOpen!({type:"error",message:err.error || err.message || "Unable to save Comment"})})
     }
-    
+    console.log(useComments)
     return(
         <>
             <Button onClick={changeComment} variant="outlined" style={{
                 color:deepOrange["A200"],
                 marginTop:"3px"
             }} >{showComment ? "Hide Comments" : "Show Comments"}</Button>
-        <Collapse in={showComment}>
         <Box className={classes.root}>
+        <Collapse style={{
+            width:"100%"
+        }} in={showComment}>
             <Box className={classes.SlideContainer}>
                 <Slide direction="right" 
                  unmountOnExit mountOnEnter
                  timeout={800} in={isVisible}>
                 <FormControl  style={{margin:".4em"}} className={classes.inputContainer}>
                      <Input name="comment"
-                    required={true}
+                        required={true}
+                        disabled={submit}
                       onChange={handleText}
                       onKeyPress={(e) => e.which === 13 && handleSubmit(e)}
                       value={text}
@@ -155,14 +171,17 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
                 </Slide>
             </Box>
             <Box className={classes.commentContainer}>
-            {comments.map(m => (
+            { (useComments as IComment[])?.length > 0 ? comments.map(m => (
                 <Box key={m._id}>
                     <Comment comment={m} deleteComment={deleteAComment} />
                 </Box>
-            ))}
+            )) : 
+            <Typography variant="body1">
+                No comments available 
+            </Typography> }
             </Box>
-        </Box>
         </Collapse>
+        </Box>
         </>
     )
 }

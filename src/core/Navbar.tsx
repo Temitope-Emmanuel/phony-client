@@ -11,7 +11,9 @@ import Menu from '@material-ui/core/Menu';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import {Box, createStyles, Theme} from "@material-ui/core"
 import {deepOrange,red,orange} from "@material-ui/core/colors"
+import {signout} from "../auth/auth-helper"
 import {Link} from "react-router-dom"
+import {DialogContext} from "../config/SnackContext"
 
 const useStyles = makeStyles((theme:Theme) =>
     createStyles({
@@ -118,7 +120,7 @@ const Navbar = () => {
   })
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-  
+  const context = React.useContext(DialogContext)
   const onScroll = (e:any) => {
     setScrolling(curSt => ({
       scrollTop:e.target.documentElement.scrollTop,
@@ -144,6 +146,9 @@ const Navbar = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
+  const logOut = (e:any) => {
+    signout(context.handleOpen!({type:"info",message:"Successfully Logged Out"}))
+  }
   
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
@@ -166,6 +171,14 @@ const Navbar = () => {
       </Link>
    </MenuItem>
   ))}
+  <MenuItem onClick={handleMenuClose}>
+      <Link style={{
+          textDecoration:"none",
+          color:"black"
+        }} onClick={logOut} to="/">
+          Logout
+      </Link>
+   </MenuItem>
 </Menu>)
 
   return (

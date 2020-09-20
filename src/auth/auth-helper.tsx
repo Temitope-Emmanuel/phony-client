@@ -24,3 +24,10 @@ export const retrieveJwt = ():IToken | null => {
     }
     return result
 }
+
+export const signout = (cb?:any) => {
+    window.localStorage.removeItem("jwtToken")
+    if(cb){
+        cb()
+    }
+}

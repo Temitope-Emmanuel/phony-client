@@ -39,7 +39,7 @@ interface IProps {
 }
 
 interface IState {
-    comment:string;
+    body:string;
     image?:File,
     imageLink:string,
     title:string
@@ -54,7 +54,7 @@ const DialogComponent:React.SFC<IProps> = ({blog,open,handleToggle,...props}) =>
     const classes = useStyles()
     const params:IParams | {} = useParams()
     const[values,setValues] = React.useState<IState>({
-        comment:"",
+        body:"",
         imageLink:"http://placeimg.com/640/480",
         title:""
     })
@@ -64,11 +64,10 @@ const DialogComponent:React.SFC<IProps> = ({blog,open,handleToggle,...props}) =>
         if(blog){
             payload = {
                 title:values.title,
-                body:values.comment
+                body:values.body
             }
         }else{
             payload = new FormData()
-            payload.append("comment",values.comment)        
             payload.append("image",values.imageLink)
         }
         if(blog){
@@ -145,6 +144,7 @@ const DialogComponent:React.SFC<IProps> = ({blog,open,handleToggle,...props}) =>
               }
               {
                   blog &&
+                <>
                 <TextField
                     id="outlined-multiline-static"
                     label="Title of Blog Post" name="title"
@@ -156,12 +156,11 @@ const DialogComponent:React.SFC<IProps> = ({blog,open,handleToggle,...props}) =>
                         margin:"1em .5em"
                     }}
                 />
-              }
               <TextField
                 id="outlined-multiline-static"
                 label="Comment" name="comment"
                 onChange={handleChange} multiline
-                value={values.comment}
+                value={values.body}
                 rows={10}
                 defaultValue="Input Any comment You would like us to know"
                 variant="outlined"
@@ -169,6 +168,8 @@ const DialogComponent:React.SFC<IProps> = ({blog,open,handleToggle,...props}) =>
                     margin:"1em .5em"
                 }}
             />
+                </>
+              }
           </DialogContent>
           <DialogActions style={{
               display:"flex",
@@ -181,7 +182,7 @@ const DialogComponent:React.SFC<IProps> = ({blog,open,handleToggle,...props}) =>
                     color:deepOrange[900],
                     padding:'.5em 1.5em'
                 }}>Cancel</Button>
-                <Button disabled={values.comment.length < 5}
+                <Button
                 onClick={handleSubmit} 
                 style={{
                     backgroundColor:deepOrange[900],

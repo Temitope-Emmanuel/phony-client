@@ -283,7 +283,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
             <TableHead>
               <TableRow className={classes.textHeader}>
                 <TableCell align="center"><span>Date</span></TableCell>
-                <TableCell align="center"><span>Comment</span></TableCell>
+                {/* <TableCell align="center"><span>Comment</span></TableCell> */}
                 <TableCell ><span>Status</span></TableCell>
               </TableRow>
             </TableHead>
