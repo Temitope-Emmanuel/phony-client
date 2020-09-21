@@ -11,6 +11,8 @@ import CancelScheduleSendIcon from '@material-ui/icons/CancelScheduleSend';
 import {createComment,deleteComment} from "./api-comment"
 import {DialogContext} from "../config/SnackContext"
 import { deepOrange} from "@material-ui/core/colors"
+import io from "socket.io-client"
+const socket = io.connect(`${process.env.REACT_APP_SERVER_URL}`)
 
 
 const useStyles = makeStyles((theme:Theme) => (
@@ -71,9 +73,15 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
     const [showComment,setShowComment] = React.useState(false)
     const context = React.useContext(DialogContext)
     const [submit,setSubmitting] = React.useState(false)
-    const [useComments,setUseComments] = React.useState<IComment[] | []>()
+    const [useComments,setUseComments] = React.useState<IComment[]>([])
     const handleVisible = () => {
         setIsVisible(!isVisible)
+    }
+    const handleToggle = () => {
+        setIsVisible(!isVisible)
+    }
+    const changeComment = () => {
+        setShowComment(!showComment)
     }
 
     React.useEffect(() => {
@@ -83,32 +91,57 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
         }
         setUseComments(comments)
     },[comments])
-    const addComment = (arg:IComment) => {
-        setUseComments([...(useComments as IComment[]),arg])
-    }
-    const handleToggle = () => {
-        setIsVisible(!isVisible)
-    }
-    const changeSubmit = () => {
-        setSubmitting(!submit)
-    }
-    const changeComment = () => {
-        setShowComment(!showComment)
-    }
-
-    const handleSubmit = (e:any) => {
-        changeSubmit()
-        createComment({transactionId:props.transactionId,token:jwt!.token},{body:text})
-        .then(data => {
-            handleToggle()
-            changeSubmit()
-            if(data.message){
-                addComment(data.data)
-                resetText()
-                context.handleOpen!({type:"success",message:"New Comment created Successfully"})
-            }
+    
+    React.useEffect(() => {
+        socket.emit("join transaction room",{
+            room:props.transactionId
         })
-        .catch(err => {context.handleOpen!({type:"error",message:err.error || err.message || "Unable to save Comment"})})
+        return () => {
+            socket.emit('leave transaction room',{
+                room:props.transactionId
+            })
+        }
+    },[])
+    const addComment = (arg:IComment) => {
+        const newComment = (useComments as IComment[]).concat(arg)
+        setUseComments(newComment)
+    }
+    React.useEffect(() => {
+        socket.on("new comment",(payload:any) => {
+            addComment(payload.data)
+            context.handleOpen!({
+            type:"success",
+            message:`New Comment Added for transaction of id
+             ${payload.data.transaction}`})
+            handleToggle()
+            setSubmitting(false)
+        })
+        return () => {
+            socket.off('new comment')
+        }
+    })
+    
+    const handleSubmit = (e:any) => {
+        setSubmitting(true)
+        socket.emit("new comment",{
+                detail:{
+                    cardId:props.transactionId,
+                    userId:jwt?.user._id,
+                    admin:jwt!.user.admin,
+                },
+                body:{body:text}
+        })
+        // createComment({transactionId:props.transactionId,token:jwt!.token},{body:text})
+        // .then(data => {
+        //     handleToggle()
+        //     setSubmitting(false)
+        //     if(data.message){
+        //         setUseComments([...(useComments as IComment[]),data.data])
+        //         resetText()
+        //         context.handleOpen!({type:"success",message:"New Comment created Successfully"})
+        //     }
+        // })
+        // .catch(err => {context.handleOpen!({type:"error",message:err.error || err.message || "Unable to save Comment"})})
     }
     const deleteAComment = (arg:string) => {
         deleteComment({token:jwt!.token,commentId:arg}).then(data => {
@@ -118,7 +151,7 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
         })
         .catch(err => {context.handleOpen!({type:"error",message:err.error || err.message || "Unable to save Comment"})})
     }
-    console.log(useComments)
+    console.log(useComments?.length)
     return(
         <>
             <Button onClick={changeComment} variant="outlined" style={{
@@ -171,7 +204,8 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
                 </Slide>
             </Box>
             <Box className={classes.commentContainer}>
-            { (useComments as IComment[])?.length > 0 ? comments.map(m => (
+            {
+            useComments && useComments!.length > 0 ? comments.map(m => (
                 <Box key={m._id}>
                     <Comment comment={m} deleteComment={deleteAComment} />
                 </Box>

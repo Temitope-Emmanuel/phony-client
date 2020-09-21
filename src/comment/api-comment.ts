@@ -7,7 +7,6 @@ interface ICredential {
 
 export const createComment = async (credential:ICredential,body:any) => {
     try{
-        console.log(credential.transactionId)
         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/comment/${credential.transactionId}/new`,{
             method:'POST',
             headers:{
@@ -17,7 +16,8 @@ export const createComment = async (credential:ICredential,body:any) => {
             },
             body:JSON.stringify(body)
         })
-        return await response.json()
+        const res = await response.json()
+        return res
     }catch(err){
         console.log(err)
     }

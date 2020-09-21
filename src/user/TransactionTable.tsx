@@ -268,12 +268,6 @@ const SimpleTable:React.SFC<IProps> = function(props){
       newCard?.unshift(card)
       setCard(newCard)
     }
-    const commentList = new Array(2).fill({
-      body:"Some bosdy sha",
-      _id:"sakasnksas",
-      author:"temitope",
-      createdAt:new Date()
-    })
     return (
         <Box className={classes.root}>
           <h3>Most Recent Transaction</h3>
