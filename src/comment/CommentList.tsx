@@ -63,9 +63,10 @@ const useStyles = makeStyles((theme:Theme) => (
 interface IProps {
     comments:IComment[];
     transactionId:string;
+    handleCardUpdate(comment:IComment,id:string):void
 }
 
-const CommentList:React.SFC<IProps> = ({comments,...props}) => {
+const CommentList:React.SFC<IProps> = ({comments,handleCardUpdate,...props}) => {
     const classes = useStyles()
     const [isVisible,setIsVisible] = React.useState(false)
     const [text,handleText,resetText] = UseInputState("")
@@ -108,13 +109,14 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
     }
     React.useEffect(() => {
         socket.on("new comment",(payload:any) => {
-            addComment(payload.data)
+            handleCardUpdate(payload.data,props.transactionId)
             context.handleOpen!({
             type:"success",
             message:`New Comment Added for transaction of id
              ${payload.data.transaction}`})
             handleToggle()
             setSubmitting(false)
+            resetText()
         })
         return () => {
             socket.off('new comment')
@@ -131,18 +133,8 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
                 },
                 body:{body:text}
         })
-        // createComment({transactionId:props.transactionId,token:jwt!.token},{body:text})
-        // .then(data => {
-        //     handleToggle()
-        //     setSubmitting(false)
-        //     if(data.message){
-        //         setUseComments([...(useComments as IComment[]),data.data])
-        //         resetText()
-        //         context.handleOpen!({type:"success",message:"New Comment created Successfully"})
-        //     }
-        // })
-        // .catch(err => {context.handleOpen!({type:"error",message:err.error || err.message || "Unable to save Comment"})})
     }
+
     const deleteAComment = (arg:string) => {
         deleteComment({token:jwt!.token,commentId:arg}).then(data => {
             if(data.message){
@@ -151,7 +143,7 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
         })
         .catch(err => {context.handleOpen!({type:"error",message:err.error || err.message || "Unable to save Comment"})})
     }
-    console.log(useComments?.length)
+
     return(
         <>
             <Button onClick={changeComment} variant="outlined" style={{
@@ -206,9 +198,9 @@ const CommentList:React.SFC<IProps> = ({comments,...props}) => {
             <Box className={classes.commentContainer}>
             {
             useComments && useComments!.length > 0 ? comments.map(m => (
-                <Box key={m._id}>
-                    <Comment comment={m} deleteComment={deleteAComment} />
-                </Box>
+                // <Box key={m._id}>
+                    <Comment key={m._id} comment={m} deleteComment={deleteAComment} />
+                // </Box>
             )) : 
             <Typography variant="body1">
                 No comments available 

@@ -12,6 +12,7 @@ import {getUserCard,updateCardStatus} from "./api-card"
 import {retrieveJwt,IToken} from "../auth/auth-helper"
 import {DialogContext} from "../config/SnackContext"
 import CommentList from "../comment/CommentList"
+import {IComment} from "../comment/Comment"
 
 
 const useStyles = makeStyles((theme:Theme) => (
@@ -222,6 +223,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
       const cardArr = cards
       const newCard = (cardArr as ICard[]).splice(idx,1,card)
       setCard(cardArr) 
+      console.log("this is the new card",cardArr)
     }
 
     const handleCardStatus = (type:string,id:string) => () => {
@@ -247,7 +249,17 @@ const SimpleTable:React.SFC<IProps> = function(props){
         }
       })
     }
-
+    const handleCardUpdate = (comment:IComment,id:string) => {
+        console.log("calling handle card comment")  
+        const foundIdx = cards?.findIndex((card,idx) => card._id === id)
+        console.log("we've found the index",foundIdx)
+        const formerCard = (cards as ICard[])[(foundIdx as number)]
+        console.log("this is the card we are aboute to transform",formerCard)
+        const updatedCard = {...formerCard,comments:formerCard.comments.concat(comment)}
+        console.log("this is the updated card",updatedCard)
+        newCardSet((foundIdx as number),updatedCard)
+    }
+    
     // const handleChangePage = ( event:unknown, newPage:number) => {
     //   setPage(newPage);
     // };
@@ -305,7 +317,8 @@ const SimpleTable:React.SFC<IProps> = function(props){
                       }} />
                     {/* <div className={clsx(classes.column, classes.helper)}> */}
                     <Box className={classes.helper}>
-                      <CommentList transactionId={card._id} comments={card.comments} />
+                      <CommentList handleCardUpdate={handleCardUpdate}
+                       transactionId={card._id} comments={card.comments} />
                     </Box>
                   </AccordionDetails>
                   {(jwt as IToken).user.admin &&
