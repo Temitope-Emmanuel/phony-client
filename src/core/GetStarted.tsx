@@ -18,10 +18,14 @@ const useStyles = makeStyles((theme:Theme) =>
             margin:"1em auto",
             position:"relative",
             display:"grid",
-            gridGap:"3em",
             gridTemplateColumns:"repeat(auto-fit,minmax(25em,auto))",
             justifyContent:"center",
-            gridAutoRows:"17.5em"
+            [theme.breakpoints.up("sm")]:{
+              gridGap:"3em",
+              gridAutoRows:"17.5em",
+            },
+            gridGap:"1em",
+            gridAutoRows:"16em"
           }
     })
 )
@@ -63,7 +67,7 @@ GetStarted.defaultProps = {
     {
       img:Img3,
       heading:"Top Notch Security",
-      content:"We have top notch business security to safe-guard against fraud and mistakes in information, your buisness is always safe with us."
+      content:"We have top notch "
     },
     {
       img:Img5,

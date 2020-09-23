@@ -213,7 +213,7 @@ const getDateString = (date:Date) => {
 }
 
 
-const Dashboard:React.SFC<IProps> = (props) => {
+const Dashboard:React.FC<IProps> = (props) => {
     const classes = useStyles()
     const [BTC,setBTC] = React.useState({
         buy:400,

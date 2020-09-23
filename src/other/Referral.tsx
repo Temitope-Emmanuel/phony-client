@@ -59,20 +59,21 @@ const useStyles = makeStyles((theme:Theme) => (
                 margin:"2.5%"
             }
         },
-        table: {
-                minWidth: 750,
-            [theme.breakpoints.down("sm")]:{
-                minWidth:200,
-                display:"flex",
-                alignItems:"center",
-                flexDirection:"column",
-                "& > *":{
-                    width:"100%"
-                }
-          }
+        table:{
+            minWidth:100,
+            // [theme.breakpoints.down("sm")]:{
+                // minWidth: 750,
+            //     display:"flex",
+            //     alignItems:"center",
+            //     flexDirection:"column",
+            //     "& > *":{
+            //         width:"100%"
+            //     }
+            // }
         },
         tableContainer:{
             width:"75%",
+            maxWidth:"40em",
             [theme.breakpoints.down("sm")]:{
                 width:"100%",
                 minWidth:200

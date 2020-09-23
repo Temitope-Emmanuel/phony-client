@@ -13,22 +13,23 @@ const useStyles = makeStyles((theme:Theme) =>
     createStyles({
         root:{
             overflowX:"hidden",
-            // position:"relative"
           },
           ImageContainer:{
             display:"flex",
-            flexDirection:"row",
+            flexDirection:"column",
             alignItems:"center",
             justifyContent:"center",
-            "& img":{
-              maxWidth:"50%",
-              maxHeight:"60vh"
+            "& img:first-child":{
+              maxWidth:"45%",
             },
-            [theme.breakpoints.down("sm")]:{
-              flexDirection:"column",
-              "& img":{
-                maxHeight:"100%",
-                maxWidth:"100%"
+            "& img:nth-child(2)":{
+              maxWidth:"100%"
+            },
+            [theme.breakpoints.up("sm")]:{
+              flexDirection:"row",
+              justifyContent:"space-around",
+              "& > *":{
+                maxWidth:"45% !important"
               }
             }
           }
@@ -49,7 +50,9 @@ const Home = () => {
         .then(data => console.log(data))
         .catch(err => console.log(err)) 
       }
-    },)
+      callServer()
+    },[])
+    
     return(
         <Box className={classes.root}>
           <Navbar/>

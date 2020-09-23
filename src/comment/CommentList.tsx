@@ -66,7 +66,7 @@ interface IProps {
     handleCardUpdate(comment:IComment,id:string):void
 }
 
-const CommentList:React.SFC<IProps> = ({comments,handleCardUpdate,...props}) => {
+const CommentList:React.FC<IProps> = ({comments,handleCardUpdate,...props}) => {
     const classes = useStyles()
     const [isVisible,setIsVisible] = React.useState(false)
     const [text,handleText,resetText] = UseInputState("")

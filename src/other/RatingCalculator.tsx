@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme:Theme) => (
             width:"100%",
             display:"flex",
             "& button":{
-                margin:theme.spacing(0,1.5),
+                margin:theme.spacing(0,.8),
                 padding:theme.spacing(1,10,1,.8),
                 border:`${deepOrange["A700"]} 2px solid`,
                 textTransform:"capitalize",
@@ -85,14 +85,28 @@ const useStyles = makeStyles((theme:Theme) => (
                     marginRight:"0 .5em",
                     fontSize:"2.5em",
                     color:"rgba(0,0,0,.7)"
-                }
+                },
+                [theme.breakpoints.up("md")]:{
+                    margin:theme.spacing(0,1.5),
+                },
             },
             [theme.breakpoints.down("md")]:{
                 justifyContent:"center"
             }
         },
-        formContainer:{},
-        margin:{}
+        formContainer:{
+            "& > *":{
+                padding:"0 .3em"
+            },
+            display:"flex",
+            flexDirection:"column",
+            justifyContent:"center",
+            alignItems:"center"
+        },
+        margin:{
+            width:"90%",
+            margin:".5em 0"
+        }
     })
 ))
 
@@ -148,7 +162,7 @@ const RatingCalculator = () => {
                 <Box className={classes.formContainer}>
                     <Select category={false} heading={"Card Name"}/>
                     <Select category={true} heading={"Card Price Tag"} />
-                    <FormControl style={{width:"100%",margin:".5em 0"}} className={classes.margin}>
+                    <FormControl className={classes.margin}>
                         <InputLabel htmlFor="textbox">Amount</InputLabel>
                         <BootstrapInput id="textbox" />
                     </FormControl>

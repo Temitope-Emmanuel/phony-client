@@ -8,7 +8,6 @@ const useStyles = makeStyles((theme:Theme) => (
         root:{
             display:"flex",
             justifyContent:"center",
-            // alignItems:"center",
             width:"90vw",
             margin:"0 5vw",
             height:"100vh",
@@ -23,10 +22,8 @@ const useStyles = makeStyles((theme:Theme) => (
     })
 ))
 
-
 const Rating = () => {
     const classes = useStyles()
-
     return(
         <Box className={classes.root}>
             <RatingCalculator/>

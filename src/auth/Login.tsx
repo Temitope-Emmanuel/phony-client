@@ -35,7 +35,9 @@ const useStyles = makeStyles((theme:Theme) => (
                 [theme.breakpoints.down("sm")]:{
                     width:"100%",
                     backgroundImage:`url(${mainBg})`,
-                    filter:"grayscale(.9)"
+                    filter:"grayscale(.45)",
+                    justifyContent:"flex-start",
+                    paddingTop:"14em"
                 }
             },
             "& > div:nth-child(2)":{
@@ -98,7 +100,7 @@ const Login = ({context,history,...props}:ILogin) => {
 
     const isValid = () => {
         return [email,password,username].every((val) => (
-            val.length >= 5
+            val.length >= 3
         ))
     }
     const handleToggle = () => {
@@ -145,7 +147,6 @@ const Login = ({context,history,...props}:ILogin) => {
                 </Typography>
                 <form className={classes.formContainer} >
                     {!isLogin &&
-                    <>
                     <TextField
                     label='Add Username'
                     InputProps={{
@@ -158,20 +159,6 @@ const Login = ({context,history,...props}:ILogin) => {
                         value={username}
                         onChange={setUsername}
                     />
-                    <TextField
-                    label='Input Referral Code'
-                    helperText="This input is not necessary"
-                    value={referral}
-                    onChange={setReferral}
-                    InputProps={{
-                        endAdornment:(
-                            <InputAdornment position="end" >
-                                <TicketIcon/>
-                            </InputAdornment>
-                        )
-                    }}
-                    />
-                    </>
                     }
                     <TextField
                     label='Add Email'
@@ -200,6 +187,21 @@ const Login = ({context,history,...props}:ILogin) => {
                         value={password}
                         onChange={setPassword}
                     />
+                    {!isLogin &&
+                        <TextField
+                        label='Input Referral Code'
+                        helperText="This input is not necessary"
+                        value={referral}
+                        onChange={setReferral}
+                        InputProps={{
+                            endAdornment:(
+                                <InputAdornment position="end" >
+                                    <TicketIcon/>
+                                </InputAdornment>
+                            )
+                        }}
+                        />
+                    }
                     <Button type="submit" onClick={handleSubmit} style={{
                         backgroundColor:orange["A700"],
                         color:"black"}} disabled={!state.isValid || state.submitting}

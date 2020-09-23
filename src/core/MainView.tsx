@@ -34,20 +34,19 @@ const useStyles = makeStyles((theme:Theme) =>
                 letterSpacing:".2em",
                 fontWeight:"400",
                 textTransform:"uppercase",
-                [theme.breakpoints.down("sm")]:{
-                    fontSize:"1.3em",
-                    fontWeight:"700"
+                margin:".2em 0",
+                [theme.breakpoints.up("md")]:{
+                    margin:"1em 0"
                 }
             },
             "& h2":{
                 textTransform:"capitalize",
                 WebkitBackgroundClip:"text",
+                fontSize:"1.1em",
                 WebkitTextFillColor:"transparent",      
                 backgroundImage:`linear-gradient(to right,black,${theme.palette.primary.dark})`,
-                [theme.breakpoints.down("sm")]:{
-                    fontSize:"1.1em",
-                    position:"absolute",
-                    top:"13em"
+                [theme.breakpoints.up("sm")]:{
+                    fontSize:"1.5em"
                 }
             },
             "& button":{

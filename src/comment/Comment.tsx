@@ -30,7 +30,6 @@ const useStyles = makeStyles((theme:Theme) => (
             height: theme.spacing(4),
           },
           commentContainer:{
-              width:"100%",
               display:"flex",
               alignItems:"center",
               flexDirection:"row"
@@ -54,7 +53,10 @@ const useStyles = makeStyles((theme:Theme) => (
 export interface IComment {
     _id:string;
     body:string;
-    author:string;
+    author:{
+        admin:string;
+        _id:string
+    };
     createdAt:Date;
 }
 interface IProps {
@@ -62,7 +64,7 @@ interface IProps {
     deleteComment(arg:string):void
 }
 
-const Comment:React.SFC<IProps> = ({comment:{body,createdAt,_id,author},deleteComment,...props}) => {
+const Comment:React.FC<IProps> = ({comment:{body,createdAt,_id,author:{admin,...author}},deleteComment,...props}) => {
     const classes =  useStyles()
     const [deleteSlide,setDeleteSlide] = React.useState(false)
 
@@ -73,9 +75,12 @@ const Comment:React.SFC<IProps> = ({comment:{body,createdAt,_id,author},deleteCo
         deleteComment(_id)
     }
     return(
-        <Box className={classes.root}>
+        <Box style={{
+        flexDirection:admin ? "row-reverse" : "row"
+    }}
+         className={classes.root}>
             <Avatar className={classes.large} 
-            alt={author} 
+            alt={author._id} 
             // src={user.profileImage}
             />
 

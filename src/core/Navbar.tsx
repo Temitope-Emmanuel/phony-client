@@ -11,7 +11,7 @@ import Menu from '@material-ui/core/Menu';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import {Box, createStyles, Theme} from "@material-ui/core"
 import {deepOrange,red,orange} from "@material-ui/core/colors"
-import {signout} from "../auth/auth-helper"
+import {signout,retrieveJwt} from "../auth/auth-helper"
 import {Link} from "react-router-dom"
 import {DialogContext} from "../config/SnackContext"
 
@@ -118,6 +118,7 @@ const Navbar = () => {
     scrollTop:0,
     scrolling:false
   })
+  const jwt = retrieveJwt()
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const context = React.useContext(DialogContext)
@@ -171,14 +172,16 @@ const Navbar = () => {
       </Link>
    </MenuItem>
   ))}
-  <MenuItem onClick={handleMenuClose}>
+  {jwt &&
+    <MenuItem onClick={handleMenuClose}>
       <Link style={{
           textDecoration:"none",
           color:"black"
         }} onClick={logOut} to="/">
           Logout
       </Link>
-   </MenuItem>
+  </MenuItem>
+  }
 </Menu>)
 
   return (

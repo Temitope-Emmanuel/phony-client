@@ -15,23 +15,22 @@ const useStyles = makeStyles(({breakpoints,...theme}:Theme) =>
             justifyContent:"center",
             position:"relative",
             transition:"all .1s linear",
-            [breakpoints.up("md")]:{
-                "&:hover":{
-                    transform:"translateY(-10%) scale(1.05)",
-                    boxShadow:"0px 10px 43px 9px rgba(0,0,0,.7)",
-                    borderRadius:"1em"
-                }     
+            height:"65%",
+            width:"90%",
+            margin:"auto",
+            [breakpoints.up("sm")]:{
+                height:"15.5em"
             },
-            [breakpoints.down("md")]:{
-                height:"10%",
-                width:"23%",
-                margin:"auto"
-            }
+            // [breakpoints.up("md")]:{
+            //     "&:hover":{
+            //         transform:"translateY(-10%) scale(1.05)",
+            //         boxShadow:"0px 10px 43px 9px rgba(0,0,0,.7)",
+            //         borderRadius:"1em"
+            //     }     
+            // }
           },
           detailContainer:{
-            //   transform:"translateX(20)",
               padding:".5em",
-            //   width:"100% !important",
               height:"100%",
               display:"flex",
               flexDirection:"column",
@@ -98,7 +97,7 @@ interface IProps {
     duration:number;
 }
 
-const GetStartedCard:React.SFC<IProps> = (props) => {
+const GetStartedCard:React.FC<IProps> = (props) => {
     const classes = useStyles()
 
     return(

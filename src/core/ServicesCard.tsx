@@ -7,25 +7,19 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 const useStyles = makeStyles((theme:Theme) =>
     createStyles({
         root:{
-            height:"100%",
-            width:"90%",
-            padding:theme.spacing(.5,.9),
             backgroundColor:"white",
             boxShadow:"0 7px 30px 3px black",
-            borderRadius:".3em",
             transition:"all .5s linear",
             cursor:"pointer",
+            borderRadius:"5em 0 5em 0",
+            height:"10em",
+            width:"18em",
+            margin:"0 auto",
             [theme.breakpoints.up("sm")]:{
               "&:hover":{
                 transform:"translateY(-15%)",
                 height:"115%",
               }
-            },
-            [theme.breakpoints.down("sm")]:{
-              borderRadius:"5em 0 5em 0",
-              height:"10em",
-              width:"18em",
-              margin:"0 auto"
             }
           },
           moreContainer:{
@@ -72,7 +66,7 @@ interface IProps {
     duration:number
 }
 
-const ServicesCard:React.SFC<IProps> = ({buy,...props}) => {
+const ServicesCard:React.FC<IProps> = ({buy,...props}) => {
 // const ServicesCard:React.SFC<IProps> = ({props}) => {
 
     const classes = useStyles()

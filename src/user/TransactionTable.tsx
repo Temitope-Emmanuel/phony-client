@@ -14,7 +14,6 @@ import {DialogContext} from "../config/SnackContext"
 import CommentList from "../comment/CommentList"
 import {IComment} from "../comment/Comment"
 
-
 const useStyles = makeStyles((theme:Theme) => (
     createStyles({
         root:{
@@ -167,7 +166,6 @@ const useStyles = makeStyles((theme:Theme) => (
     })
 ))
 
-
 interface IDetail {
   limit:number;
   page:number;
@@ -184,7 +182,6 @@ const SimpleTable:React.SFC<IProps> = function(props){
     const context = React.useContext(DialogContext)
     const [expanded, setExpanded] = React.useState<string | boolean>("5f6513b73d1a9e1cb4810eb0");
     const [open,setOpen] = React.useState(false)
-    // const [page, setPage] = React.useState(2);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [cards,setCard ] = React.useState<ICard[]>()
     const [detail,setDetail] = React.useState<IDetail>({
@@ -219,6 +216,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
         abortController.abort()
       }
     },[])
+
     const newCardSet = (idx:number,card:ICard) => {
       const cardArr = cards
       const newCard = (cardArr as ICard[]).splice(idx,1,card)
@@ -250,13 +248,9 @@ const SimpleTable:React.SFC<IProps> = function(props){
       })
     }
     const handleCardUpdate = (comment:IComment,id:string) => {
-        console.log("calling handle card comment")  
         const foundIdx = cards?.findIndex((card,idx) => card._id === id)
-        console.log("we've found the index",foundIdx)
         const formerCard = (cards as ICard[])[(foundIdx as number)]
-        console.log("this is the card we are aboute to transform",formerCard)
         const updatedCard = {...formerCard,comments:formerCard.comments.concat(comment)}
-        console.log("this is the updated card",updatedCard)
         newCardSet((foundIdx as number),updatedCard)
     }
     
@@ -280,6 +274,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
       newCard?.unshift(card)
       setCard(newCard)
     }
+    console.log(cards)
     return (
         <Box className={classes.root}>
           <h3>Most Recent Transaction</h3>
@@ -315,7 +310,6 @@ const SimpleTable:React.SFC<IProps> = function(props){
                           borderRadius:".5em",
                           backgroundImage:`url(${card.image})`
                       }} />
-                    {/* <div className={clsx(classes.column, classes.helper)}> */}
                     <Box className={classes.helper}>
                       <CommentList handleCardUpdate={handleCardUpdate}
                        transactionId={card._id} comments={card.comments} />
@@ -364,7 +358,8 @@ const SimpleTable:React.SFC<IProps> = function(props){
             color:"rgba(0,0,0,.9)",
             backgroundColor:deepOrange["A200"]
             }}>Create New Transaction</Button>
-          <Dialog open={open} blog={false} updateCardList={updateCardList}
+          <Dialog open={open} blog={false}
+           updateCardList={updateCardList}
            handleToggle={handleToggle} />
         </Box>
       );

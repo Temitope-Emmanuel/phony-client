@@ -15,15 +15,11 @@ const useStyles = makeStyles((theme:Theme) => (
             alignItems:"center",
             flexDirection:"column",
             width:"100vw",
-
         },
         blogContainer:{
             width:"95%",
             borderRadius:".3em",
             margin:"1em .5em",
-            // display:"flex",
-            // alignItems:"center",
-            // flexWrap:"wrap"
             display:"grid",
             gridTemplateColumns:"repeat( auto-fit, minmax(23em, 1fr))",
             gridTemplateRows:"fit-content(12em)",
@@ -40,7 +36,7 @@ const useStyles = makeStyles((theme:Theme) => (
             "& > div:first-child":{
                 display:"flex",
                 justifyContent:"flex-start",
-                alignItems:"center",
+                alignItems:"flex-start",
                 flexDirection:"column",
                 width:"75%",
                 " & span":{
@@ -68,7 +64,6 @@ const BlogPage = () => {
     const classes = useStyles()
     const [blogs,setBlogs] = React.useState<IBlog[]>()
     const context = React.useContext(DialogContext)
-
     React.useEffect(() => {
         const abortController = new AbortController()
         const signal = abortController.signal
@@ -85,23 +80,23 @@ const BlogPage = () => {
             }
         })
     },[])
-
     return(
         <Box className={classes.root}>
-            <Typography variant="h4">
+            <Typography variant="h6">
                 PHONYTUNES BLOG
             </Typography>
             <Box className={classes.blogContainer}>
                 {blogs && blogs.map((blog,idx) =>(
                     <Box key={idx} className={classes.bodyContainer} >
                         <Box>
-                            <Typography variant="h5">
+                            <Typography style={{alignSelf:'"flex-start'}}
+                             variant="h5">
                                 {blog.title}
                             </Typography>
                             <Typography variant="body1" >
                                 {blog.body.substring(0,150)}...
                             </Typography>
-                        <Typography style={{alignSelf:'"flex-start'}} variant="caption" >{new Date(blog.createdAt).toLocaleString()}</Typography>
+                            <Typography style={{alignSelf:'"flex-start'}} variant="caption" >{new Date(blog.createdAt).toLocaleString()}</Typography>
                         </Box>
                         <Box className={classes.imageContainer}></Box>
                     </Box>

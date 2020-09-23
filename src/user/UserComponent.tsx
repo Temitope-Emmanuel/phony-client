@@ -145,6 +145,7 @@ const UserComponent = function(props:RouteComponentProps){
         abortController.abort()
       }
       }},[])
+      console.log(user)
 
   // console.log("render")
   // if(!Boolean(user)){
@@ -185,7 +186,7 @@ const UserComponent = function(props:RouteComponentProps){
             >
               {
                 user?.username &&
-              <Dashboard user={user} />
+              <Dashboard user={(user as IUser)} />
               }
             </TabPanel>
             <TabPanel value={value} index={1}
@@ -209,11 +210,11 @@ const UserComponent = function(props:RouteComponentProps){
              >
                {
                  user?.admin &&
-              <Dashboard user={user} />
-               }
+              <Dashboard user={(user as IUser)} />
+                }
             </TabPanel>
           </SwipeableViews>
-        <Footer/>
+        {user?.username && <Footer/>}
         </div>
         </>
       )
