@@ -11,6 +11,7 @@ import {retrieveJwt} from "../auth/auth-helper"
 import {useParams} from "react-router-dom"
 import {ICard} from "./UserComponent"
 import { blue,red,orange,deepOrange } from '@material-ui/core/colors';
+import {storage} from "../firebase"
 
 
 const useStyles = makeStyles((theme:Theme) => (
@@ -40,7 +41,7 @@ interface IProps {
 
 interface IState {
     body:string;
-    image?:File,
+    image:File | null,
     imageLink:string,
     title:string
 }
@@ -49,17 +50,27 @@ interface IParams {
     userId:string
 }
 
-const DialogComponent:React.SFC<IProps> = ({blog,open,handleToggle,...props}) => {
+const DialogComponent:React.FC<IProps> = ({blog,open,handleToggle,...props}) => {
     const context = React.useContext(DialogContext)
     const classes = useStyles()
     const params:IParams | {} = useParams()
     const[values,setValues] = React.useState<IState>({
         body:"",
-        imageLink:"http://placeimg.com/640/480",
-        title:""
+        imageLink:"",
+        title:"",
+        image:null
     })
-    const handleSubmit = async () => {
-        let payload;
+    
+    const handleFilebaseUpload = () => {
+        const uploadTask = storage.ref(`/images/${(values.image as File).name}`).put((values.image as File))
+        uploadTask.on("state_changed",(snapShot) => {
+        },(err) =>  {
+            context.handleOpen!({type:"error",message:err.message ||"Something went wrong please try again later"})
+        },() => {
+            storage.ref("images").child((values.image as File).name).getDownloadURL().then(imageUrl =>
+                {
+                setValues((curSt) => ({...values,imageLink:imageUrl}))
+                let payload;
         const jwt = retrieveJwt()
         if(blog){
             payload = {
@@ -68,11 +79,11 @@ const DialogComponent:React.SFC<IProps> = ({blog,open,handleToggle,...props}) =>
             }
         }else{
             payload = new FormData()
-            payload.append("image",values.imageLink)
+            payload.append("image",imageUrl)
         }
         if(blog){
             newBlog(payload,jwt!.token).then(data => {
-                console.log(data)
+                setValues({...values,image:null,imageLink:""})
                 if(data.message){
                     context.handleOpen!({type:"success",message:"New Blog has been created"})
                 }else{
@@ -82,6 +93,7 @@ const DialogComponent:React.SFC<IProps> = ({blog,open,handleToggle,...props}) =>
             })
         }else{
             create(payload,{userId:(params as IParams).userId,token:jwt!.token}).then(data => {
+                setValues({...values,image:null,imageLink:""})
                 console.log(data)
                 if(data.message){
                     if(props.updateCardList){
@@ -95,6 +107,12 @@ const DialogComponent:React.SFC<IProps> = ({blog,open,handleToggle,...props}) =>
             })
         }
         handleToggle()
+            })
+        })
+    }
+
+    const handleSubmit = async () => {
+        await handleFilebaseUpload();
     }
 
     const handleChange = (evt:ChangeEvent<HTMLInputElement>) => {

@@ -15,6 +15,7 @@
     "@types/react-dom": "^16.9.8",
     "aos": "^2.3.4",
     "cross-env": "^7.0.2",
+    "firebase": "^7.21.1",
     "husky": "^4.2.5",
     "prettier": "^2.1.1",
     "react": "^16.13.1",

@@ -145,8 +145,7 @@ const UserComponent = function(props:RouteComponentProps){
         abortController.abort()
       }
       }},[])
-      console.log(user)
-
+    
   // console.log("render")
   // if(!Boolean(user)){
   //   return <div>still loading</div>

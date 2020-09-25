@@ -161,7 +161,7 @@ const useStyles = makeStyles((theme:Theme) => (
             "& > div:first-child":{
                 width:"45",
                 [theme.breakpoints.up("md")]:{
-                    marginRight:"3em",
+                    // marginRight:"3em",
                 },
                 [theme.breakpoints.down("md")]:{
                     width:"95vw",

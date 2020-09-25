@@ -123,7 +123,6 @@ const Login = ({context,history,...props}:ILogin) => {
         }
         const apiCall = isLogin ? login(payload) : create(payload)
         apiCall.then(data => {
-            console.log(data)
             setState({...state,submitting:false})
             if(data){
                 if(data.error){

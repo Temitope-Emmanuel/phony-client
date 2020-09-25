@@ -221,7 +221,6 @@ const SimpleTable:React.SFC<IProps> = function(props){
       const cardArr = cards
       const newCard = (cardArr as ICard[]).splice(idx,1,card)
       setCard(cardArr) 
-      console.log("this is the new card",cardArr)
     }
 
     const handleCardStatus = (type:string,id:string) => () => {
@@ -274,7 +273,6 @@ const SimpleTable:React.SFC<IProps> = function(props){
       newCard?.unshift(card)
       setCard(newCard)
     }
-    console.log(cards)
     return (
         <Box className={classes.root}>
           <h3>Most Recent Transaction</h3>
