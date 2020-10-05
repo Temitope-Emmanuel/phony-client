@@ -80,6 +80,7 @@ const DialogComponent:React.FC<IProps> = ({blog,open,handleToggle,...props}) => 
         }else{
             payload = new FormData()
             payload.append("image",imageUrl)
+            payload.append("name",(values.image as File).name)
         }
         if(blog){
             newBlog(payload,jwt!.token).then(data => {
@@ -144,8 +145,8 @@ const DialogComponent:React.FC<IProps> = ({blog,open,handleToggle,...props}) => 
                   }} variant="subtitle2" >
                       {values.image ? values.image?.name : "Upload Image"}
                   </Typography>
-                <input name="image" onChange={handleChange}
-                 type="file" accept="image/**" style={{display:"none"}}
+                <input  accept="image/*" name="image" onChange={handleChange}
+                 type="file" style={{display:"none"}}
                 id="Image-input"/>
                 <label htmlFor="Image-input">
                     <Button component="span">

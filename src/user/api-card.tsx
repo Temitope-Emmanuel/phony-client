@@ -17,7 +17,6 @@ const defaultQuery = {
     page:1
 }
 
-
 interface IBody {
     status:string
 }
@@ -81,6 +80,20 @@ export const updateCardStatus = async (credential:ICardCredential,body:IBody) =>
                 "Content-Type":"application/json"
             },
             body:JSON.stringify(body)
+        })
+        return await response.json()
+    }catch(err){
+        console.log(err)
+    }
+}
+
+export const deleteCardTransaction = async (arg:{token:string,cardId:string}) => {
+    try{
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/card/${arg.cardId}`,{
+            method:'DELETE',
+            headers:{
+                Authorization:`Bearer ${arg.token}`
+            }
         })
         return await response.json()
     }catch(err){

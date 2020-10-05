@@ -1,18 +1,23 @@
 import React,{ChangeEvent} from "react"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
-import {Table,TableBody,TableCell,TableContainer,TableHead,TableRow} from '@material-ui/core';
-import {Accordion,AccordionDetails,AccordionSummary,AccordionActions} from "@material-ui/core"
+import {
+  Table,TableBody,TableCell,
+  TableContainer,TableHead,TableRow} from '@material-ui/core';
+import {Accordion,IconButton,AccordionDetails,AccordionSummary,AccordionActions} from "@material-ui/core"
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {Button,Typography,ButtonGroup,Box,TablePagination} from "@material-ui/core"
 import Dialog from './Dialog'
 import CheckIcon from "@material-ui/icons/CheckBoxSharp"
 import {green,deepOrange,orange} from "@material-ui/core/colors"
 import {ICard} from "./UserComponent"
-import {getUserCard,updateCardStatus} from "./api-card"
+import {getUserCard,updateCardStatus,deleteCardTransaction} from "./api-card"
 import {retrieveJwt,IToken} from "../auth/auth-helper"
 import {DialogContext} from "../config/SnackContext"
 import CommentList from "../comment/CommentList"
 import {IComment} from "../comment/Comment"
+import {storage} from "../firebase"
+import DownloadIcon from '@material-ui/icons/GetApp';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles((theme:Theme) => (
     createStyles({
@@ -162,6 +167,17 @@ const useStyles = makeStyles((theme:Theme) => (
           [theme.breakpoints.down("sm")]:{
             width:"100%"
           }
+        },
+        buttonContainer:{
+          backgroundColor:orange["A100"],
+          margin:".5em 0",
+          padding:".2em 1em",
+          display:"flex",
+          justifyContent:"space-between",
+          alignItems:"center",
+          "& button":{
+            color:"black"
+          }
         }
     })
 ))
@@ -177,7 +193,7 @@ interface IProps {
   admin:boolean;
 }
 
-const SimpleTable:React.SFC<IProps> = function(props){
+const SimpleTable:React.FC<IProps> = function(props){
     const classes = useStyles()
     const context = React.useContext(DialogContext)
     const [expanded, setExpanded] = React.useState<string | boolean>("5f6513b73d1a9e1cb4810eb0");
@@ -207,7 +223,7 @@ const SimpleTable:React.SFC<IProps> = function(props){
         })
       }
     }
-
+    console.log(cards)
     React.useEffect(() => {
       const abortController = new AbortController()
       const {signal} = abortController
@@ -273,6 +289,26 @@ const SimpleTable:React.SFC<IProps> = function(props){
       newCard?.unshift(card)
       setCard(newCard)
     }
+
+    const deleteCard = (arg:{id:string,imageUrl:string}) => async() => {
+      const storageRef = storage.ref()
+      const deleteImage = storageRef.child(`images/${arg.imageUrl}`)
+
+      await deleteImage.delete().then()
+      deleteCardTransaction({token:jwt!.token,cardId:arg.id}).then(data => {
+        if(data){
+          if(data.message){
+            context.handleOpen!({type:"success",message:`Transaction of id ${arg.id} has been Deleted`})
+          }else{
+            context.handleOpen!({type:"error",message:data.error || "Somehting went wrong"})  
+          }
+        }else{
+          context.handleOpen!({type:"info",message:`Something went wrong`})
+          
+        }
+      })
+    }
+
     return (
         <Box className={classes.root}>
           <h3>Most Recent Transaction</h3>
@@ -282,7 +318,6 @@ const SimpleTable:React.SFC<IProps> = function(props){
             <TableHead>
               <TableRow className={classes.textHeader}>
                 <TableCell align="center"><span>Date</span></TableCell>
-                {/* <TableCell align="center"><span>Comment</span></TableCell> */}
                 <TableCell ><span>Status</span></TableCell>
               </TableRow>
             </TableHead>
@@ -296,7 +331,6 @@ const SimpleTable:React.SFC<IProps> = function(props){
                   <AccordionSummary className={classes.accordionSummary} id={card._id}
                    expandIcon={<ExpandMoreIcon />} aria-controls={card._id}>
                     <TableCell align="right"><span>{new Date(card.createdAt).toLocaleDateString()}</span></TableCell>
-                    {/* <TableCell align="right"><span>{`${card.comment.substring(0,40)}...`}</span></TableCell> */}
                     <TableCell className={classes.statusContainer}
                     align="right"><span>{card.status === "Success" ? "Success"
                       : card.status === "Failed" ? "Failed" : "Pending"}</span>
@@ -308,6 +342,17 @@ const SimpleTable:React.SFC<IProps> = function(props){
                           borderRadius:".5em",
                           backgroundImage:`url(${card.image})`
                       }} />
+                      {/* <img src={card.image} height={240} width={240} /> */}
+                      <ButtonGroup className={classes.buttonContainer}>
+                          <a href={card.image} download>
+                            <IconButton>
+                                <DownloadIcon/>
+                            </IconButton>
+                          </a>
+                        <IconButton onClick={deleteCard({id:card._id,imageUrl:card.image})}>
+                          <DeleteIcon/>
+                        </IconButton>
+                      </ButtonGroup>
                     <Box className={classes.helper}>
                       <CommentList handleCardUpdate={handleCardUpdate}
                        transactionId={card._id} comments={card.comments} />
