@@ -349,7 +349,7 @@ const SimpleTable:React.FC<IProps> = function(props){
                                 <DownloadIcon/>
                             </IconButton>
                           </a>
-                        <IconButton onClick={deleteCard({id:card._id,imageUrl:card.image})}>
+                        <IconButton onClick={deleteCard({id:card._id,imageUrl:card.name})}>
                           <DeleteIcon/>
                         </IconButton>
                       </ButtonGroup>

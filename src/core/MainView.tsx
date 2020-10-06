@@ -20,14 +20,15 @@ const useStyles = makeStyles((theme:Theme) =>
             backgroundImage:`url(${mainBg}),url(${backgroundImg1}),url(${backgroundImg3}),url(${backgroundImg2})`,
             backgroundSize:"cover,contain,contain,contain",
             backgroundRepeat:"no-repeat,repeat,no-repeat,repeat",
-            backgroundPosition:"right,center,bottom,center",
+            backgroundPosition:"center,center,bottom,center",
             backgroundBlendMode:"hard-light,multiply",
             display:"flex",
             justifyContent:"center",
             alignItems:"start",
             flexDirection:"column",
             "& h1":{
-                fontSize:"2.5em",
+                fontSize:"1.3em",
+                whiteSpacing:"nowrap",
                 WebkitBackgroundClip:"text",
                 WebkitTextFillColor:"transparent",      
                 backgroundImage:`linear-gradient(to right,black,${theme.palette.primary.dark})`,
@@ -35,8 +36,11 @@ const useStyles = makeStyles((theme:Theme) =>
                 fontWeight:"400",
                 textTransform:"uppercase",
                 margin:".2em 0",
+                marginBottom:".5em",
+                marginLeft:"-10px",
                 [theme.breakpoints.up("md")]:{
-                    margin:"1em 0"
+                    margin:"1em 0",
+                    fontSize:"2.5em"
                 }
             },
             "& h2":{

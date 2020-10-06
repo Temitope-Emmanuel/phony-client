@@ -27,7 +27,7 @@ interface ITabProps {
     dir:string;
 }
 
-const TabPanel:React.SFC<ITabProps> = function (props) {
+const TabPanel:React.FC<ITabProps> = function (props) {
     const { children, value, index, ...other } = props;
   
     return (
@@ -92,12 +92,12 @@ export interface ICard {
   image:string;
   owner:string;
   _id:string;
+  name:string;
   status:string;
   createdAt:Date;
   comments:IComment[];
 
 }
-
 
 export interface IUser {
   username:string;
@@ -108,7 +108,6 @@ export interface IUser {
   referral:string;
   referralCount:number;
 }
-
 
 const UserComponent = function(props:RouteComponentProps){
     const classes = useStyles()
