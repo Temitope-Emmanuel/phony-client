@@ -357,7 +357,7 @@ const Dashboard:React.FC<IProps> = (props) => {
                     width:"50%"
                 }}>
                     {!admin &&
-                        <h4>Welcome to Phonystore. Click below to begin</h4>
+                        <h4>Welcome to Phonytunes. Click below to begin</h4>
                     }
                     {open && 
                     <Grow in={open}>
