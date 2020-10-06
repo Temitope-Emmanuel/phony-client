@@ -196,7 +196,7 @@ interface IProps {
 const SimpleTable:React.FC<IProps> = function(props){
     const classes = useStyles()
     const context = React.useContext(DialogContext)
-    const [expanded, setExpanded] = React.useState<string | boolean>("5f6513b73d1a9e1cb4810eb0");
+    const [expanded, setExpanded] = React.useState<string | boolean>(false);
     const [open,setOpen] = React.useState(false)
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [cards,setCard ] = React.useState<ICard[]>()
@@ -223,7 +223,6 @@ const SimpleTable:React.FC<IProps> = function(props){
         })
       }
     }
-    console.log(cards)
     React.useEffect(() => {
       const abortController = new AbortController()
       const {signal} = abortController
@@ -233,12 +232,18 @@ const SimpleTable:React.FC<IProps> = function(props){
       }
     },[])
 
-    const newCardSet = (idx:number,card:ICard) => {
+    // For adding a new cardset to the state
+    const newCardSet = (idx:number,card?:ICard) => {
       const cardArr = cards
-      const newCard = (cardArr as ICard[]).splice(idx,1,card)
+      if(card){
+        const newCard = (cardArr as ICard[]).splice(idx,1,card)
+      }else{
+        const newCard = (cardArr as ICard[]).splice(idx,1)
+      }
       setCard(cardArr) 
     }
 
+    // For setting the transaction status by the admin
     const handleCardStatus = (type:string,id:string) => () => {
       const token = {
         token:(jwt as IToken).token,
@@ -262,17 +267,15 @@ const SimpleTable:React.FC<IProps> = function(props){
         }
       })
     }
+
+    // For creating a new card with inserted comments
     const handleCardUpdate = (comment:IComment,id:string) => {
         const foundIdx = cards?.findIndex((card,idx) => card._id === id)
         const formerCard = (cards as ICard[])[(foundIdx as number)]
         const updatedCard = {...formerCard,comments:formerCard.comments.concat(comment)}
         newCardSet((foundIdx as number),updatedCard)
     }
-    
-    // const handleChangePage = ( event:unknown, newPage:number) => {
-    //   setPage(newPage);
-    // };
-  
+      
     const handleChangeRowsPerPage = (event:ChangeEvent<HTMLInputElement>) => {
       setRowsPerPage(parseInt(event.target.value, 5));
       // setPage(0);
@@ -290,10 +293,10 @@ const SimpleTable:React.FC<IProps> = function(props){
       setCard(newCard)
     }
 
-    const deleteCard = (arg:{id:string,imageUrl:string}) => async() => {
+    const deleteCard = (arg:{id:string,imageUrl:string,idx:number}) => async() => {
       const storageRef = storage.ref()
+      newCardSet(arg.idx)
       const deleteImage = storageRef.child(`images/${arg.imageUrl}`)
-
       await deleteImage.delete().then()
       deleteCardTransaction({token:jwt!.token,cardId:arg.id}).then(data => {
         if(data){
@@ -322,7 +325,7 @@ const SimpleTable:React.FC<IProps> = function(props){
               </TableRow>
             </TableHead>
             <TableBody className={classes.tableContainer}>
-              {cards && cards.map((card) => (
+              {cards && cards.map((card,idx) => (
               <TableRow key={card._id}>
                 <Accordion className={classes.AccordionContainer}
                 key={card._id} expanded={expanded === card._id}
@@ -349,7 +352,7 @@ const SimpleTable:React.FC<IProps> = function(props){
                                 <DownloadIcon/>
                             </IconButton>
                           </a>
-                        <IconButton onClick={deleteCard({id:card._id,imageUrl:card.name})}>
+                        <IconButton onClick={deleteCard({id:card._id,imageUrl:card.name,idx})}>
                           <DeleteIcon/>
                         </IconButton>
                       </ButtonGroup>

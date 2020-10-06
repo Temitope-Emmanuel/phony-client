@@ -95,7 +95,6 @@ const DialogComponent:React.FC<IProps> = ({blog,open,handleToggle,...props}) => 
         }else{
             create(payload,{userId:(params as IParams).userId,token:jwt!.token}).then(data => {
                 setValues({...values,image:null,imageLink:""})
-                console.log(data)
                 if(data.message){
                     if(props.updateCardList){
                         props.updateCardList(data.data)
