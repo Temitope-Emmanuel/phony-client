@@ -5,7 +5,7 @@ import MainView from "./MainView"
 import Atlas from "./Atlas"
 import GetStarted from "./GetStarted"
 import Services from "./Services"
-import {Img2,Img3} from "../assets/images/clusterImg"
+import {BrandImage01,BrandImage03} from "assets/images/brandImage"
 import Footer from "./Footer"
 import Navbar from "./Navbar"
 
@@ -60,8 +60,8 @@ const Home = () => {
           <Atlas/>
           <GetStarted/>
           <Box className={classes.ImageContainer}>
-            <img data-aos="flip-right" src={Img2} />
-            <img data-aos="flip-left" src={Img3} />
+            <img data-aos="flip-right" src={BrandImage01} />
+            <img data-aos="flip-left" src={BrandImage03} />
           </Box>
           <Services/>
           <Footer/>

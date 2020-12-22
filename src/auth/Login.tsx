@@ -14,16 +14,24 @@ import TicketIcon from '@material-ui/icons/ConfirmationNumber';
 import PasswordIcon from '@material-ui/icons/Visibility';
 import EmailIcon from '@material-ui/icons/Email';
 import saveJwt from "./auth-helper"
+import {BrandImage01,BrandImage02,BrandImage03,BrandImage04,BrandImage05} from "assets/images/brandImage"
 
 const useStyles = makeStyles((theme:Theme) => (
     createStyles({
         root:{
-            width:"98%",
+            width:"100vw",
             height:"98vh",
             display:"flex",
             alignItems:"center",
             borderRadius:"5em",
             padding:"1vh 1%",
+            paddingRight:"0",
+            overflowX:"hidden",
+            "& > div":{
+                backgroundSize:"cover",
+                backgroundRepeat:"no-repeat",
+                backgroundPosition:"center",
+            },
             "& > div:first-child":{
                 backgroundColor:"whitesmoke",
                 width:"40vw",
@@ -34,14 +42,14 @@ const useStyles = makeStyles((theme:Theme) => (
                 flexDirection:"column",
                 [theme.breakpoints.down("sm")]:{
                     width:"100%",
-                    backgroundImage:`url(${mainBg})`,
+                    backgroundImage:`url(${BrandImage04})`,
                     filter:"grayscale(.45)",
                     justifyContent:"flex-start",
                     paddingTop:"14em"
                 }
             },
             "& > div:nth-child(2)":{
-                backgroundImage:`url(${mainBg})`,
+                backgroundImage:`url(${BrandImage03})`,
                 width:"60vw",
                 height:"100%",
                 filter:"grayscale(.5)",

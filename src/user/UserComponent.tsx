@@ -145,11 +145,6 @@ const UserComponent = function(props:RouteComponentProps){
       }
       }},[])
     
-  // console.log("render")
-  // if(!Boolean(user)){
-  //   return <div>still loading</div>
-  // }else{
-  //   console.log("rendering again")
     return (
         <>
         <div className={classes.root}>
@@ -167,9 +162,7 @@ const UserComponent = function(props:RouteComponentProps){
               variant="fullWidth"
               aria-label="full width tabs example"
             >
-              {[<DashboardIcon/>,<SyncAltIcon/>,
-               <AccountBalanceWalletIcon/>,
-                <PaymentIcon/>,<RecentActorsIcon/>].map((m,idx) => (
+              {[<DashboardIcon/>,<SyncAltIcon/>].map((m,idx) => (
                 <Tab key={idx} icon={m} label={`tab ${idx+1}`} {...a11yProps(idx)} />
               ))}
             </Tabs>

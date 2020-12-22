@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme:Theme) =>
             },
             "& a":{
               textDecoration:"none",
-              color:"black",
+              color:deepOrange[500],
               fontSize:".9em",
               fontWeight:"400",
               letterSpacing:".15em",
@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme:Theme) =>
             "& a":{
               fontSize:"1.2em",
               textDecoration:"none",
-              color:"rgba(0,0,0,.8)",
+              color:deepOrange[500],
               textTransform:"capitalize",
               letterSpacing:".1em",
               fontWeight:"500",
@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme:Theme) =>
                 transition:"0.35s ease-out all",
               },
               "&:hover":{
-                color:"rgba(0,0,0,1)",
+                color:deepOrange[700],
                 "&::after":{
                   height:"2.5px !important",
                   width: "100%",
@@ -188,7 +188,7 @@ const Navbar = () => {
     <>
       <AppBar className={classes.appContainer} elevation={0} 
         style={{
-        backgroundColor:!atHome ? orange[200] : scrolling.scrolling ? orange["A400"] : "transparent"}}>
+        backgroundColor:!atHome ? "rgba(0,0,0,.8)" : scrolling.scrolling ? "rgba(0,0,0,.8)" : "transparent"}}>
       <Toolbar disableGutters >
           <Box className={classes.title}>
             <Link data-aos="fade-right" to="/">

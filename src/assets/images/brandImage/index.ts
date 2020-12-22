@@ -1,0 +1,5 @@
+export {default as BrandImage01} from "./phonyweb-01.png"
+export {default as BrandImage02} from "./phonyweb-02.png"
+export {default as BrandImage03} from "./phonyweb-03.png"
+export {default as BrandImage04} from "./phonyweb-04.png"
+export {default as BrandImage05} from "./phonyweb-05.png"

@@ -229,7 +229,7 @@ const Footer = function(){
                         <h3>Contact Information</h3>
                         <span>
                         <LocationOnIcon/>
-                        <p>12, Sule Abuka Close off Opebi Rd</p>
+                        <p>12, Sule Abuka Opebi Rd</p>
                         </span>
                         <span>
                         <PinDropIcon/>
@@ -241,7 +241,7 @@ const Footer = function(){
                         </span>
                         <span>
                         <PhoneIcon/>
-                        <p>+234 (0) 702 6290 389</p>
+                        <p>(+234) 702 6290 389</p>
                         </span>
                     </Box>
                 </Box>

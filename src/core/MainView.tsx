@@ -4,9 +4,10 @@ import {Link} from "react-router-dom"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
 import Typed from "react-typed"
 import {Button,ButtonGroup} from "@material-ui/core"
-import {mainBg,backgroundImg1,backgroundImg2,backgroundImg3} from "../assets/images/main"
+import {backgroundImg1,backgroundImg2,backgroundImg3} from "../assets/images/main"
 import { deepOrange } from "@material-ui/core/colors"
 import {retrieveJwt} from "../auth/auth-helper"
+import {BrandImage04} from "assets/images/brandImage"
 
 
 const useStyles = makeStyles((theme:Theme) => 
@@ -14,10 +15,10 @@ const useStyles = makeStyles((theme:Theme) =>
         root:{
             height:"60vh",
             width:"100%",
-            paddingLeft:"1.5em",
+            paddingLeft:"1rem",
             paddingTop:"12.5em",
             backgroundAttachment:"fixed",
-            backgroundImage:`url(${mainBg}),url(${backgroundImg1}),url(${backgroundImg3}),url(${backgroundImg2})`,
+            backgroundImage:`url(${BrandImage04}),url(${backgroundImg1}),url(${backgroundImg3}),url(${backgroundImg2})`,
             backgroundSize:"cover,contain,contain,contain",
             backgroundRepeat:"no-repeat,repeat,no-repeat,repeat",
             backgroundPosition:"center,center,bottom,center",
@@ -26,6 +27,9 @@ const useStyles = makeStyles((theme:Theme) =>
             justifyContent:"center",
             alignItems:"start",
             flexDirection:"column",
+            [theme.breakpoints.up("sm")]:{
+                paddingLeft:"1.5em"
+            },
             "& h1":{
                 fontSize:"1.3em",
                 whiteSpacing:"nowrap",
