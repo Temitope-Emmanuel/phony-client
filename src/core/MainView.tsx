@@ -4,31 +4,40 @@ import {Link} from "react-router-dom"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
 import Typed from "react-typed"
 import {Button,ButtonGroup} from "@material-ui/core"
-import {backgroundImg1,backgroundImg2,backgroundImg3} from "../assets/images/main"
+import {backgroundImg1,backgroundImg2} from "../assets/images/main"
 import { deepOrange } from "@material-ui/core/colors"
 import {retrieveJwt} from "../auth/auth-helper"
-import {BrandImage04} from "assets/images/brandImage"
+import {BrandImage01,BrandImage02,BrandImage03,BrandImage04,BrandImage05} from "assets/images/brandImage"
+import SwipeableViews from 'react-swipeable-views';
+import { autoPlay } from 'react-swipeable-views-utils';
+
+const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 
 const useStyles = makeStyles((theme:Theme) => 
     createStyles({
         root:{
-            height:"60vh",
+            height:"75vh",
             width:"100%",
-            paddingLeft:"1rem",
-            paddingTop:"12.5em",
-            backgroundAttachment:"fixed",
-            backgroundImage:`url(${BrandImage04}),url(${backgroundImg1}),url(${backgroundImg3}),url(${backgroundImg2})`,
-            backgroundSize:"cover,contain,contain,contain",
-            backgroundRepeat:"no-repeat,repeat,no-repeat,repeat",
-            backgroundPosition:"center,center,bottom,center",
-            backgroundBlendMode:"hard-light,multiply",
             display:"flex",
             justifyContent:"center",
             alignItems:"start",
             flexDirection:"column",
-            [theme.breakpoints.up("sm")]:{
-                paddingLeft:"1.5em"
+            position:"relative",
+            "& > div:first-child":{
+                backgroundAttachment:"fixed",
+                position:"absolute",
+                height:"100%",
+                width:"100%",
+                "& div":{
+                    height:"100%",
+                    width:"100%",
+                    backgroundSize:"cover,contain,contain,contain",
+                    backgroundRepeat:"no-repeat,repeat",
+                    backgroundPosition:"center,center",
+                    backgroundBlendMode:"hard-light,multiply",
+
+                }
             },
             "& h1":{
                 fontSize:"1.3em",
@@ -80,9 +89,17 @@ const useStyles = makeStyles((theme:Theme) =>
 
 const MainView = () => {
     const classes = useStyles()
+    const [index,setIndex] = React.useState(1)
     const jwt = retrieveJwt()
+    
+    console.log(index)
     return(
         <Box className={classes.root}>
+            <AutoPlaySwipeableViews index={index} onChangeIndex={setIndex}>
+                {[BrandImage01,BrandImage02,BrandImage03,BrandImage04,BrandImage05].map(item => (
+                    <Box style={{backgroundImage:`url(${item}),url(${backgroundImg2}),url(${backgroundImg1})`}}></Box>
+                ))}
+            </AutoPlaySwipeableViews>
             <h2 data-aos="fade" data-aos-delay={500}>Do you want to&nbsp;
                 <Typed
                 strings={[

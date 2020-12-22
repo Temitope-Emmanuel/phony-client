@@ -2,7 +2,6 @@ import React from "react"
 import {Link,RouteComponentProps} from "react-router-dom"
 import {makeStyles,Theme,createStyles} from "@material-ui/core/styles"
 import {Box,IconButton,Button,TextField,Typography,InputAdornment} from "@material-ui/core"
-import {mainBg} from "../assets/images/main"
 import {create,login} from "./api-auth"
 import useInputState from "../config/useInputState"
 import {SnackConsumer} from "../other/Snackbar"
@@ -14,7 +13,7 @@ import TicketIcon from '@material-ui/icons/ConfirmationNumber';
 import PasswordIcon from '@material-ui/icons/Visibility';
 import EmailIcon from '@material-ui/icons/Email';
 import saveJwt from "./auth-helper"
-import {BrandImage01,BrandImage02,BrandImage03,BrandImage04,BrandImage05} from "assets/images/brandImage"
+import {BrandImage03,BrandImage04} from "assets/images/brandImage"
 
 const useStyles = makeStyles((theme:Theme) => (
     createStyles({
